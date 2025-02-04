@@ -39,6 +39,15 @@ Copy the `.jar` file to the `plugins` directory of your allay server.
 Start the allay server and check the logs to ensure your plugin loads and operates
 as expected.
 
+5. **Test Your Plugin in Gradle**
+
+```bash
+gradlew runServer
+```
+
+This command will start an allay server with your plugin loaded.
+Then close allay server by clicking `X` in the dashboard window.
+
 ## Documentation
 
 For a deeper dive into the Allay API and its functionalities, please refer to our [documentation](https://docs.allaymc.org) (WIP).
