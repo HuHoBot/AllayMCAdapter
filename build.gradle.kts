@@ -40,7 +40,7 @@ tasks.register<Copy>("runServer") {
     val launcherRepo = "https://raw.githubusercontent.com/AllayMC/AllayLauncher/refs/heads/main/scripts"
     val cmdWin = "Invoke-Expression (Invoke-WebRequest -Uri \"${launcherRepo}/install_windows.ps1\").Content"
     val cmdLinux = "wget -qO- ${launcherRepo}/install_linux.sh | bash"
-    val cwd = layout.buildDirectory.file("launcher").get().asFile.apply { mkdirs() }
+    val cwd = layout.buildDirectory.file("run").get().asFile.apply { mkdirs() }
 
     val shadowJar = tasks.named("shadowJar", ShadowJar::class).get()
     from(shadowJar.archiveFile.get().asFile)
