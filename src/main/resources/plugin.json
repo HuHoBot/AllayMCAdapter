@@ -1,6 +1,6 @@
 {
-  "entrance": "org.allaymc.javaplugintemplate.JavaPluginTemplate",
-  "name": "JavaPluginTemplate",
-  "authors": ["mdx"],
-  "version": "1.0.0"
+  "entrance": "cn.huohuas001.huHoBot.HuHoBot",
+  "name": "HuHoBot",
+  "authors": ["HuoHuas001"],
+  "version": "0.0.1"
 }

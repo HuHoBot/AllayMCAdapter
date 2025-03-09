@@ -5,9 +5,9 @@ plugins {
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
-group = "org.allaymc.javaplugintemplate"
-description = "Java plugin template for allay server"
-version = "1.0.0"
+group = "cn.huohuas001.huHoBot"
+description = "HuHoBot Allay Adapter"
+version = "0.0.1"
 
 java {
     toolchain {
@@ -24,8 +24,11 @@ repositories {
 }
 
 dependencies {
-    compileOnly(group = "org.allaymc.allay", name = "api", version = "master-SNAPSHOT")
+    compileOnly(group = "org.allaymc.allay", name = "api", version = "0.2.0")
     compileOnly(group = "org.projectlombok", name = "lombok", version = "1.18.34")
+
+    implementation("org.java-websocket:Java-WebSocket:1.5.4")
+    implementation("com.alibaba.fastjson2:fastjson2:2.0.52")
 
     annotationProcessor(group = "org.projectlombok", name = "lombok", version = "1.18.34")
 }
