@@ -6,6 +6,8 @@ import cn.huohuas001.huHoBot.Tools.PackId;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import lombok.extern.slf4j.Slf4j;
+import org.allaymc.api.plugin.PluginDescriptor;
+import org.allaymc.api.server.Server;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
@@ -174,7 +176,7 @@ public class WsClient extends WebSocketClient {
             body.put("hashKey", config.getHashKey());
         }
         body.put("name", config.getServerName());
-        body.put("version", HuHoBot.PLUGIN_VERSION);
+        body.put("version", HuHoBot.getPlugin().getPluginContainer().descriptor().getVersion());
         body.put("platform", "allay");
         sendMessage("shakeHand", body);
     }

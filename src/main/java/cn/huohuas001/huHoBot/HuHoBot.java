@@ -3,15 +3,13 @@ package cn.huohuas001.huHoBot;
 import cn.huohuas001.huHoBot.Command.HuHoBotCommand;
 import cn.huohuas001.huHoBot.NetEvent.*;
 import cn.huohuas001.huHoBot.Settings.PluginConfig;
-import cn.huohuas001.huHoBot.Tools.CustomCommandSender;
+import cn.huohuas001.huHoBot.Tools.ConsoleSender;
 import com.alibaba.fastjson2.JSONObject;
 import eu.okaeri.configs.ConfigManager;
 import lombok.extern.slf4j.Slf4j;
-import org.allaymc.api.command.Command;
 import org.allaymc.api.command.CommandResult;
 import org.allaymc.api.command.CommandSender;
 import org.allaymc.api.i18n.I18n;
-import org.allaymc.api.i18n.TrContainer;
 import org.allaymc.api.plugin.Plugin;
 import org.allaymc.api.registry.Registries;
 import org.allaymc.api.server.Server;
@@ -19,7 +17,6 @@ import org.allaymc.api.utils.Utils;
 
 import java.nio.file.Path;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -27,7 +24,6 @@ public class HuHoBot extends Plugin {
     private static HuHoBot instance;
     private static final String CONFIG_FILE_NAME = "plugins/HuHoBot/config.yml";
     private static PluginConfig config;
-    public static final String PLUGIN_VERSION = "0.0.1";
     private static WebsocketClientManager clientManager; //Websocket客户端
     private Map<String, EventRunner> eventList = new HashMap<>(); //事件列表
 
@@ -124,12 +120,8 @@ public class HuHoBot extends Plugin {
 
     public void runCommand(String command, String packId) {
         CommandSender orginalSender = Server.getInstance();
-        CustomCommandSender customCommandSender = new CustomCommandSender(orginalSender);
-        CommandResult result = Registries.COMMANDS.execute(customCommandSender, command);
-        StringBuilder resultTextBuilder = new StringBuilder();
-        for (var output : customCommandSender.getOutput()) {
-            resultTextBuilder.append(I18n.get().tr(output.str(), output.args()));
-        }
+        CommandResult result = Registries.COMMANDS.execute(orginalSender, command);
+        String resultTextBuilder = "暂不支持返回值.";
         if(result.isSuccess()){
             clientManager.getClient().respone("已执行,命令回调如下:\n" + resultTextBuilder, "success", packId);
         }else{
