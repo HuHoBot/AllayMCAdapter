@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.allaymc.api.scheduler.Scheduler;
 import org.allaymc.api.server.Server;
+import cn.huohuas001.config.ServerConfig;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -15,8 +16,7 @@ public class WebsocketClientManager {
     private int ReconnectAttempts = 0;
     private boolean shouldReconnect = true; // 控制是否重连的变量
     private static WsClient client; //Websocket客户端
-    private static final String websocketUrl = "ws://119.91.100.129:8888"; //Websocket地址
-    //private static String websocketUrl = "ws://127.0.0.1:8888"; //Websocket地址
+    private static final String websocketUrl = ServerConfig.WS_SERVER_URL; //Websocket地址
     private final HuHoBot plugin;
     private final Scheduler scheduler = Server.getInstance().getScheduler();
     private int currentTask = 0;

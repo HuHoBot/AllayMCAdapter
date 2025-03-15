@@ -33,8 +33,49 @@ dependencies {
     annotationProcessor(group = "org.projectlombok", name = "lombok", version = "1.18.34")
 }
 
+// 新增配置生成任务
+tasks.register<Copy>("generateServerConfig") {
+    group = "Build"
+    description = "生成服务器配置类"
+
+    from("src/main/templates/java")
+    into("src/main/generated/java")
+
+    // 文件名处理
+    include("**/*.template")
+    rename { fileName ->
+        fileName.replace(".template", "")
+    }
+
+    filter { line ->
+        line.replace("\${WS_SERVER_URL}",
+            project.findProperty("wsServerUrl")?.toString() ?: "ws://127.0.0.1:8080"
+        )
+    }
+
+    filteringCharset = "UTF-8"
+}
+
+// 将生成的代码目录加入源码集
+sourceSets {
+    main {
+        java {
+            srcDir("src/main/generated/java")
+        }
+    }
+}
+
+// 确保编译前先执行生成任务
+tasks.compileJava {
+    dependsOn("generateServerConfig")
+}
+
+tasks.clean {
+    delete("src/main/generated")
+}
+
 tasks.shadowJar {
-    archiveClassifier = "shaded"
+    archiveClassifier = "AllayMC"
 }
 
 tasks.register<Copy>("runServer") {
