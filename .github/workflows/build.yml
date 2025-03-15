@@ -4,19 +4,19 @@ on:
   push:
     branches: [ "main", "dev" ]
     paths:
-      - '.github/workflows/release.yml'
+      - '.github/workflows/build.yml'
       - 'src/**'
       - 'build.gradle'
     tags:
       - 'v*' # 匹配 v 开头的标签
   pull_request:
     paths:
-      - '.github/workflows/release.yml'
+      - '.github/workflows/build.yml'
       - 'src/**'
       - 'build.gradle'
 
 env:
-  GRADLE_VERSION: 7.6.3
+  GRADLE_VERSION: 8.10
 
 jobs:
   build:
@@ -56,7 +56,7 @@ jobs:
         if: success() && contains(github.ref_name, 'main')
         with:
           path: build/libs/*.jar
-          retention-days: 1  # 仅保留1天临时文件
+
 
   release:
     name: Create Release
