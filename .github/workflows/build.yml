@@ -55,6 +55,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: success() && contains(github.ref_name, 'main')
         with:
+          name: release-artifacts
           path: build/libs/*.jar
 
 
