@@ -6,8 +6,6 @@ import cn.huohuas001.huHoBot.Tools.PackId;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import lombok.extern.slf4j.Slf4j;
-import org.allaymc.api.plugin.PluginDescriptor;
-import org.allaymc.api.server.Server;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
@@ -19,7 +17,7 @@ import java.util.concurrent.CompletableFuture;
 @Slf4j
 public class WsClient extends WebSocketClient {
     private final Map<String, CompletableFuture<JSONObject>> responseFutureList = new HashMap<>();
-    private HuHoBot plugin;
+    private final HuHoBot plugin;
     private final WebsocketClientManager clientManager;
 
 
@@ -32,7 +30,7 @@ public class WsClient extends WebSocketClient {
 
     @Override
     public void onOpen(ServerHandshake _da) {
-        log.info("·şÎñ¶ËÁ¬½Ó³É¹¦.");
+        log.info("æœåŠ¡ç«¯è¿æ¥æˆåŠŸ.");
         this.shakeHand();
     }
 
@@ -56,23 +54,23 @@ public class WsClient extends WebSocketClient {
 
     @Override
     public void onClose(int code, String reason, boolean remote) {
-        log.error("Á¬½ÓÒÑ¶Ï¿ª,´íÎóÂë:{} ´íÎóĞÅÏ¢:{}", code, reason);
+        log.error("è¿æ¥å·²æ–­å¼€,é”™è¯¯ç :{} é”™è¯¯ä¿¡æ¯:{}", code, reason);
         clientManager.clientReconnect();
     }
 
     @Override
     public void onError(Exception ex) {
-        log.error("Á¬½Ó·¢Éú´íÎó!´íÎóĞÅÏ¢:{}", ex.getMessage());
+        log.error("è¿æ¥å‘ç”Ÿé”™è¯¯!é”™è¯¯ä¿¡æ¯:{}", ex.getMessage());
         clientManager.clientReconnect();
     }
 
 
 
     /**
-     * Ïò·şÎñ¶Ë·¢ËÍÒ»ÌõÏûÏ¢
+     * å‘æœåŠ¡ç«¯å‘é€ä¸€æ¡æ¶ˆæ¯
      *
-     * @param type ÏûÏ¢ÀàĞÍ
-     * @param body ÏûÏ¢Êı¾İ
+     * @param type æ¶ˆæ¯ç±»å‹
+     * @param body æ¶ˆæ¯æ•°æ®
      */
     public void sendMessage(String type, JSONObject body) {
         String newPackId = PackId.getPackID();
@@ -80,11 +78,11 @@ public class WsClient extends WebSocketClient {
     }
 
     /**
-     * Ïò·şÎñ¶Ë·¢ËÍÒ»ÌõÏûÏ¢
+     * å‘æœåŠ¡ç«¯å‘é€ä¸€æ¡æ¶ˆæ¯
      *
-     * @param type   ÏûÏ¢ÀàĞÍ
-     * @param body   ÏûÏ¢Êı¾İ
-     * @param packId ÏûÏ¢Id
+     * @param type   æ¶ˆæ¯ç±»å‹
+     * @param body   æ¶ˆæ¯æ•°æ®
+     * @param packId æ¶ˆæ¯Id
      */
     public void sendMessage(String type, JSONObject body, String packId) {
         JSONObject data = new JSONObject();
@@ -99,11 +97,11 @@ public class WsClient extends WebSocketClient {
     }
 
     /**
-     * Ïò·şÎñ¶Ë·¢ËÍÒ»ÌõÏûÏ¢²¢»ñÈ¡·µ»ØÖµ
+     * å‘æœåŠ¡ç«¯å‘é€ä¸€æ¡æ¶ˆæ¯å¹¶è·å–è¿”å›å€¼
      *
-     * @param type ÏûÏ¢ÀàĞÍ
-     * @param body ÏûÏ¢Êı¾İ
-     * @return ÏûÏ¢»Ø±¨Ìå
+     * @param type æ¶ˆæ¯ç±»å‹
+     * @param body æ¶ˆæ¯æ•°æ®
+     * @return æ¶ˆæ¯å›æŠ¥ä½“
      */
     public CompletableFuture<JSONObject> sendRequestAndAwaitResponse(String type, JSONObject body) {
         String newPackId = PackId.getPackID();
@@ -111,16 +109,16 @@ public class WsClient extends WebSocketClient {
     }
 
     /**
-     * Ïò·şÎñ¶Ë·¢ËÍÒ»ÌõÏûÏ¢²¢»ñÈ¡·µ»ØÖµ
+     * å‘æœåŠ¡ç«¯å‘é€ä¸€æ¡æ¶ˆæ¯å¹¶è·å–è¿”å›å€¼
      *
-     * @param type   ÏûÏ¢ÀàĞÍ
-     * @param body   ÏûÏ¢Êı¾İ
-     * @param packId ÏûÏ¢Id
-     * @return ÏûÏ¢»Ø±¨Ìå
+     * @param type   æ¶ˆæ¯ç±»å‹
+     * @param body   æ¶ˆæ¯æ•°æ®
+     * @param packId æ¶ˆæ¯Id
+     * @return æ¶ˆæ¯å›æŠ¥ä½“
      */
     public CompletableFuture<JSONObject> sendRequestAndAwaitResponse(String type, JSONObject body, String packId) {
         if (this.isOpen()) {
-            //´ò°üÊı¾İ²¢·¢ËÍ
+            //æ‰“åŒ…æ•°æ®å¹¶å‘é€
             JSONObject data = new JSONObject();
             JSONObject header = new JSONObject();
             header.put("type", type);
@@ -129,7 +127,7 @@ public class WsClient extends WebSocketClient {
             data.put("body", body);
             this.send(data.toJSONString());
 
-            //´æ´¢»Ø±¨
+            //å­˜å‚¨å›æŠ¥
             CompletableFuture<JSONObject> responseFuture = new CompletableFuture<>();
             responseFutureList.put(packId, responseFuture);
 
@@ -140,10 +138,10 @@ public class WsClient extends WebSocketClient {
     }
 
     /**
-     * Ïò·şÎñ¶Ë·¢ËÍÒ»Ìõ»Ø±¨
+     * å‘æœåŠ¡ç«¯å‘é€ä¸€æ¡å›æŠ¥
      *
-     * @param msg  »Ø±¨ÏûÏ¢
-     * @param type »Ø±¨ÀàĞÍ£ºsuccess|error
+     * @param msg  å›æŠ¥æ¶ˆæ¯
+     * @param type å›æŠ¥ç±»å‹ï¼šsuccess|error
      */
     public void respone(String msg, String type) {
         String newPackId = PackId.getPackID();
@@ -151,11 +149,11 @@ public class WsClient extends WebSocketClient {
     }
 
     /**
-     * Ïò·şÎñ¶Ë·¢ËÍÒ»Ìõ»Ø±¨
+     * å‘æœåŠ¡ç«¯å‘é€ä¸€æ¡å›æŠ¥
      *
-     * @param msg    »Ø±¨ÏûÏ¢
-     * @param type   »Ø±¨ÀàĞÍ£ºsuccess|error
-     * @param packId »Ø±¨Id
+     * @param msg    å›æŠ¥æ¶ˆæ¯
+     * @param type   å›æŠ¥ç±»å‹ï¼šsuccess|error
+     * @param packId å›æŠ¥Id
      */
     public void respone(String msg, String type, String packId) {
         JSONObject body = new JSONObject();
@@ -164,10 +162,10 @@ public class WsClient extends WebSocketClient {
     }
 
     /**
-     * Ïò·şÎñ¶ËÎÕÊÖ
+     * å‘æœåŠ¡ç«¯æ¡æ‰‹
      */
     private void shakeHand() {
-        PluginConfig config = plugin.getConfig();
+        PluginConfig config = HuHoBot.getConfig();
         JSONObject body = new JSONObject();
         body.put("serverId", config.getServerId());
         if (config.get("hashKey") == null) {

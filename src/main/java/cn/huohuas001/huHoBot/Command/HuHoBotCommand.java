@@ -2,12 +2,10 @@ package cn.huohuas001.huHoBot.Command;
 
 import cn.huohuas001.huHoBot.HuHoBot;
 import cn.huohuas001.huHoBot.NetEvent.bindRequest;
-import org.allaymc.api.command.CommandSender;
 import org.allaymc.api.command.SimpleCommand;
 import org.allaymc.api.command.tree.CommandContext;
 import org.allaymc.api.command.tree.CommandTree;
 import org.allaymc.api.permission.DefaultPermissions;
-import org.allaymc.api.server.Server;
 import org.allaymc.api.utils.TextFormat;
 
 public class HuHoBotCommand extends SimpleCommand {
@@ -19,33 +17,33 @@ public class HuHoBotCommand extends SimpleCommand {
 
     private void onReconnect(CommandContext sender) {
         if (HuHoBot.getPlugin().reconnect()) {
-            sender.addOutput(TextFormat.GOLD + "ÖØÁ¬»úÆ÷ÈË³É¹¦.");
+            sender.addOutput(TextFormat.GOLD + "é‡è¿žæœºå™¨äººæˆåŠŸ.");
         } else {
-            sender.addOutput(TextFormat.DARK_RED + "ÖØÁ¬»úÆ÷ÈËÊ§°Ü£ºÒÑÔÚÁ¬½Ó×´Ì¬.");
+            sender.addOutput(TextFormat.DARK_RED + "é‡è¿žæœºå™¨äººå¤±è´¥ï¼šå·²åœ¨è¿žæŽ¥çŠ¶æ€.");
         }
 
     }
 
     private void onDisconnect(CommandContext sender) {
         if (HuHoBot.getPlugin().disConnectServer()) {
-            sender.addOutput(TextFormat.GOLD + "ÒÑ¶Ï¿ª»úÆ÷ÈËÁ¬½Ó.");
+            sender.addOutput(TextFormat.GOLD + "å·²æ–­å¼€æœºå™¨äººè¿žæŽ¥.");
         }
     }
 
     private void onBind(CommandContext sender, String args) {
         bindRequest obj = HuHoBot.getPlugin().bindRequestObj;
         if(obj.confirmBind(args)){
-            sender.addOutput(TextFormat.GOLD + "ÒÑÏò·þÎñÆ÷·¢ËÍÈ·ÈÏ°ó¶¨ÇëÇó£¬ÇëµÈ´ý·þÎñ¶ËÏÂ·¢ÅäÖÃÎÄ¼þ.");
+            sender.addOutput(TextFormat.GOLD + "å·²å‘æœåŠ¡å™¨å‘é€ç¡®è®¤ç»‘å®šè¯·æ±‚ï¼Œè¯·ç­‰å¾…æœåŠ¡ç«¯ä¸‹å‘é…ç½®æ–‡ä»¶.");
         }else{
-            sender.addOutput(TextFormat.DARK_RED + "°ó¶¨Âë´íÎó£¬ÇëÖØÐÂÊäÈë.");
+            sender.addOutput(TextFormat.DARK_RED + "ç»‘å®šç é”™è¯¯ï¼Œè¯·é‡æ–°è¾“å…¥.");
         }
     }
 
     private void onHelp(CommandContext sender) {
-        sender.addOutput(TextFormat.AQUA + "HuHoBot ²Ù×÷Ïà¹ØÃüÁî");
-        sender.addOutput(TextFormat.GOLD + ">" + TextFormat.DARK_GRAY + "/huhobot reconnect - ÖØÐÂÁ¬½Ó·þÎñÆ÷");
-        sender.addOutput(TextFormat.GOLD + ">" + TextFormat.DARK_GRAY + "/huhobot disconnect - ¶Ï¿ª·þÎñÆ÷Á¬½Ó");
-        sender.addOutput(TextFormat.GOLD + ">" + TextFormat.DARK_GRAY + "/huhobot bind <code:String> - È·ÈÏ°ó¶¨");
+        sender.addOutput(TextFormat.AQUA + "HuHoBot æ“ä½œç›¸å…³å‘½ä»¤");
+        sender.addOutput(TextFormat.GOLD + ">" + TextFormat.DARK_GRAY + "/huhobot reconnect - é‡æ–°è¿žæŽ¥æœåŠ¡å™¨");
+        sender.addOutput(TextFormat.GOLD + ">" + TextFormat.DARK_GRAY + "/huhobot disconnect - æ–­å¼€æœåŠ¡å™¨è¿žæŽ¥");
+        sender.addOutput(TextFormat.GOLD + ">" + TextFormat.DARK_GRAY + "/huhobot bind <code:String> - ç¡®è®¤ç»‘å®š");
     }
 
     @Override
@@ -68,6 +66,12 @@ public class HuHoBotCommand extends SimpleCommand {
                 .exec(context -> {
                     String Code = context.getResult(1);
                     onBind(context, Code);
+                    return context.success();
+                })
+                .root()
+                .key("help")
+                .exec(context -> {
+                    onHelp(context);
                     return context.success();
                 });
 

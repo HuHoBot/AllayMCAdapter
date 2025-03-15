@@ -11,12 +11,12 @@ import java.net.URISyntaxException;
 
 @Slf4j
 public class WebsocketClientManager {
-    private final int RECONNECT_DELAY = 5; // ÖØÁ¬ÑÓ³ÙÊ±¼ä£¬µ¥Î»ÎªÃë
-    private final int MAX_RECONNECT_ATTEMPTS = 5; // ×î´óÖØÁ¬³¢ÊÔ´ÎÊı
+    private final int RECONNECT_DELAY = 5; // é‡è¿å»¶è¿Ÿæ—¶é—´ï¼Œå•ä½ä¸ºç§’
+    private final int MAX_RECONNECT_ATTEMPTS = 5; // æœ€å¤§é‡è¿å°è¯•æ¬¡æ•°
     private int ReconnectAttempts = 0;
-    private boolean shouldReconnect = true; // ¿ØÖÆÊÇ·ñÖØÁ¬µÄ±äÁ¿
-    private static WsClient client; //Websocket¿Í»§¶Ë
-    private static final String websocketUrl = ServerConfig.WS_SERVER_URL; //WebsocketµØÖ·
+    private boolean shouldReconnect = true; // æ§åˆ¶æ˜¯å¦é‡è¿çš„å˜é‡
+    private static WsClient client; //Websocketå®¢æˆ·ç«¯
+    private static final String websocketUrl = ServerConfig.WS_SERVER_URL; //Websocketåœ°å€
     private final HuHoBot plugin;
     private final Scheduler scheduler = Server.getInstance().getScheduler();
     private int currentTask = 0;
@@ -28,16 +28,16 @@ public class WebsocketClientManager {
     }
 
     /**
-     * ÉèÖÃÊÇ·ñÓ¦¸ÃÖØÁ¬
+     * è®¾ç½®æ˜¯å¦åº”è¯¥é‡è¿
      *
-     * @param shouldReconnect ÊÇ·ñÓ¦¸ÃÖØÁ¬
+     * @param shouldReconnect æ˜¯å¦åº”è¯¥é‡è¿
      */
     public void setShouldReconnect(boolean shouldReconnect) {
         this.shouldReconnect  = shouldReconnect;
     }
 
     /**
-     * ¿Í»§¶Ë×Ô¶¯ÖØÁ¬Ñ­»·
+     * å®¢æˆ·ç«¯è‡ªåŠ¨é‡è¿å¾ªç¯
      */
     private boolean autoReconnect() {
         synchronized (this){
@@ -46,7 +46,7 @@ public class WebsocketClientManager {
             }
             ReconnectAttempts++;
             if (ReconnectAttempts >= MAX_RECONNECT_ATTEMPTS) {
-                log.warn(" ÖØÁ¬³¢ÊÔÒÑ´ïµ½×î´ó´ÎÊı£¬½«²»ÔÙ³¢ÊÔÖØĞÂÁ¬½Ó¡£");
+                log.warn(" é‡è¿å°è¯•å·²è¾¾åˆ°æœ€å¤§æ¬¡æ•°ï¼Œå°†ä¸å†å°è¯•é‡æ–°è¿æ¥ã€‚");
                 cancelCurrentTask();
                 return false;
             }
@@ -54,7 +54,7 @@ public class WebsocketClientManager {
                 cancelCurrentTask();
                 return false;
             }
-            log.info(" ÕıÔÚ³¢ÊÔÖØĞÂÁ¬½Ó,ÕâÊÇµÚ({}/" + MAX_RECONNECT_ATTEMPTS + ")´ÎÁ¬½Ó", ReconnectAttempts);
+            log.info(" æ­£åœ¨å°è¯•é‡æ–°è¿æ¥,è¿™æ˜¯ç¬¬({}/" + MAX_RECONNECT_ATTEMPTS + ")æ¬¡è¿æ¥", ReconnectAttempts);
             this.connectServer();
             return true;
         }
@@ -80,7 +80,7 @@ public class WebsocketClientManager {
     }
 
     public void autoDisConnectClient(){
-        log.info("Á¬½Ó³¬Ê±£¬ÒÑ×Ô¶¯ÖØÁ¬");
+        log.info("è¿æ¥è¶…æ—¶ï¼Œå·²è‡ªåŠ¨é‡è¿");
         shutdownClient();
     }
 
@@ -95,15 +95,15 @@ public class WebsocketClientManager {
     }
 
     /**
-     * Á¬½ÓHuHoBot·şÎñÆ÷
+     * è¿æ¥HuHoBotæœåŠ¡å™¨
      */
     public boolean connectServer() {
-        log.info(" ÕıÔÚÁ¬½Ó·şÎñ¶Ë...");
+        log.info(" æ­£åœ¨è¿æ¥æœåŠ¡ç«¯...");
         try {
             URI uri = new URI(websocketUrl);
             if (client == null || !client.isOpen())  {
                 client = new WsClient(uri, this);
-                setShouldReconnect(true); // ÉèÖÃÊÇ·ñÖØÁ¬
+                setShouldReconnect(true); // è®¾ç½®æ˜¯å¦é‡è¿
                 client.connect();
                 plugin.sendBindMessage();
             }

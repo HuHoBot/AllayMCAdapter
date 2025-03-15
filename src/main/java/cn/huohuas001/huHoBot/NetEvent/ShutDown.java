@@ -2,19 +2,18 @@ package cn.huohuas001.huHoBot.NetEvent;
 
 import cn.huohuas001.huHoBot.HuHoBot;
 import lombok.extern.slf4j.Slf4j;
-import java.util.logging.Logger;
 
 @Slf4j
 public class ShutDown extends EventRunner {
-    private HuHoBot plugin = HuHoBot.getPlugin();
+    private final HuHoBot plugin = HuHoBot.getPlugin();
 
     @Override
     public boolean run() {
-        log.error("·şÎñ¶ËÃüÁî¶Ï¿ªÁ¬½Ó Ô­Òò:{}", body.getString("msg"));
-        log.error("´Ë´íÎó¾ßÓĞ²»¿ÉÈİ´íĞÔ!Çë¼ì²é²å¼şÅäÖÃÎÄ¼ş!");
-        log.warn("ÕıÔÚ¶Ï¿ªÁ¬½Ó...");
-        plugin.getClientManager().setShouldReconnect(false);
-        plugin.getClientManager().shutdownClient();
+        log.error("æœåŠ¡ç«¯å‘½ä»¤æ–­å¼€è¿æ¥ åŸå› :{}", body.getString("msg"));
+        log.error("æ­¤é”™è¯¯å…·æœ‰ä¸å¯å®¹é”™æ€§!è¯·æ£€æŸ¥æ’ä»¶é…ç½®æ–‡ä»¶!");
+        log.warn("æ­£åœ¨æ–­å¼€è¿æ¥...");
+        HuHoBot.getClientManager().setShouldReconnect(false);
+        HuHoBot.getClientManager().shutdownClient();
         return true;
     }
 }

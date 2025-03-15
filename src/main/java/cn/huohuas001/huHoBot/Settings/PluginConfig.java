@@ -5,69 +5,68 @@ import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.*;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-// Ö÷ÅäÖÃÀà
-@Names(strategy = NameStrategy.IDENTITY) // ±£³Ö×Ö¶ÎÃûÔ­ÑùÊä³ö
+// ä¸»é…ç½®ç±»
+@Names(strategy = NameStrategy.IDENTITY) // ä¿æŒå­—æ®µååŸæ ·è¾“å‡º
 public class PluginConfig extends OkaeriConfig {
 
-    // region ºËĞÄÅäÖÃ
+    // region æ ¸å¿ƒé…ç½®
     @Comment({
-            "·şÎñÆ÷Î¨Ò»ID (Æô¶¯Ê±×Ô¶¯Éú³É)",
-            "! ÇëÎğÊÖ¶¯ĞŞ¸Ä£¬Áô¿Õ¼´¿É"
+            "æœåŠ¡å™¨å”¯ä¸€ID (å¯åŠ¨æ—¶è‡ªåŠ¨ç”Ÿæˆ)",
+            "! è¯·å‹¿æ‰‹åŠ¨ä¿®æ”¹ï¼Œç•™ç©ºå³å¯"
     })
     private String serverId = null;
 
     @Comment({
-            "Í¨ĞÅ¼ÓÃÜÃÜÔ¿ (°ó¶¨ºó×Ô¶¯»ñÈ¡)",
-            "! ÇëÎğÊÖ¶¯ĞŞ¸Ä£¬Áô¿Õ¼´¿É"
+            "é€šä¿¡åŠ å¯†å¯†é’¥ (ç»‘å®šåè‡ªåŠ¨è·å–)",
+            "! è¯·å‹¿æ‰‹åŠ¨ä¿®æ”¹ï¼Œç•™ç©ºå³å¯"
     })
     private String hashKey = null;
     // endregion
 
-    // region ÁÄÌìÅäÖÃ
-    @Comment("ÈºÁÄÏûÏ¢¸ñÊ½ (¿ÉÓÃ±äÁ¿: {nick}, {msg})")
+    // region èŠå¤©é…ç½®
+    @Comment("ç¾¤èŠæ¶ˆæ¯æ ¼å¼ (å¯ç”¨å˜é‡: {nick}, {msg})")
     @CustomKey("chatFormatGroup")
-    private String chatFormatGroup = "Èº:<{nick}> {msg}";
+    private String chatFormatGroup = "ç¾¤:<{nick}> {msg}";
     // endregion
 
-    // region ·şÎñÆ÷ÅäÖÃ
+    // region æœåŠ¡å™¨é…ç½®
     @Comment({
-            "MOTD·şÎñÆ÷µØÖ·",
-            "¸ñÊ½: µØÖ·:¶Ë¿Ú (Ê¾Àı: play.easecation.net:19132)"
+            "MOTDæœåŠ¡å™¨åœ°å€",
+            "æ ¼å¼: åœ°å€:ç«¯å£ (ç¤ºä¾‹: play.easecation.net:19132)"
     })
     @CustomKey("motdUrl")
     private String motdUrl = "play.easecation.net:19132";
     @Comment({
-            "·şÎñÆ÷ÏÔÊ¾Ãû³Æ"
+            "æœåŠ¡å™¨æ˜¾ç¤ºåç§°"
     })
     @CustomKey("serverName")
     private String serverName = "AllayMC";
     // endregion
 
-    // region ×Ô¶¨ÒåÃüÁî
-    @Comment("×Ô¶¨ÒåÃüÁîÁĞ±í")
+    // region è‡ªå®šä¹‰å‘½ä»¤
+    @Comment("è‡ªå®šä¹‰å‘½ä»¤åˆ—è¡¨")
     @CustomKey("customCommand")
     private List<CustomCommand> customCommand = Arrays.asList(
-            new CustomCommand("¼Ó°×Ãû", "whitelist add &1", 0),
-            new CustomCommand("¹ÜÀí¼Ó°×Ãû", "whitelist add &1", 1)
+            new CustomCommand("åŠ ç™½å", "whitelist add &1", 0),
+            new CustomCommand("ç®¡ç†åŠ ç™½å", "whitelist add &1", 1)
     );
 
     @Names(strategy = NameStrategy.IDENTITY)
     public static class CustomCommand extends OkaeriConfig {
-        @Comment("´¥·¢Ö¸Áî (Ö§³ÖÖĞÎÄ)")
+        @Comment("è§¦å‘æŒ‡ä»¤ (æ”¯æŒä¸­æ–‡)")
         private String key;
 
-        @Comment("Êµ¼ÊÖ´ĞĞµÄÃüÁî (&1=µÚÒ»¸ö²ÎÊı)")
+        @Comment("å®é™…æ‰§è¡Œçš„å‘½ä»¤ (&1=ç¬¬ä¸€ä¸ªå‚æ•°)")
         private String command;
 
-        @Comment("È¨ÏŞµÈ¼¶ 0=Íæ¼Ò 1=¹ÜÀí")
+        @Comment("æƒé™ç­‰çº§ 0=ç©å®¶ 1=ç®¡ç†")
         private int permission;
 
-        // ĞèÒªÎŞ²Î¹¹ÔìÆ÷
+        // éœ€è¦æ— å‚æ„é€ å™¨
         public CustomCommand() {
         }
 
@@ -77,7 +76,7 @@ public class PluginConfig extends OkaeriConfig {
             this.permission = permission;
         }
 
-        // Getters ±ØĞë´æÔÚ
+        // Getters å¿…é¡»å­˜åœ¨
         public String getKey() { return key; }
         public String getCommand() { return command; }
         public int getPermission() { return permission; }
@@ -101,7 +100,7 @@ public class PluginConfig extends OkaeriConfig {
     }
     // endregion
 
-    // ³õÊ¼»¯·½·¨Ê¾Àı
+    // åˆå§‹åŒ–æ–¹æ³•ç¤ºä¾‹
     public void initializeDefaults() {
         if (this.serverId == null) {
             String uuidString = PackId.getPackID();

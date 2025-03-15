@@ -1,6 +1,5 @@
 package cn.huohuas001.huHoBot.NetEvent;
 
-import cn.huohuas001.huHoBot.HuHoBot;
 import cn.huohuas001.huHoBot.Tools.SetController;
 import com.alibaba.fastjson2.JSONObject;
 import org.allaymc.api.server.Server;
@@ -18,52 +17,52 @@ public class QueryAllowList extends EventRunner {
         if (body.containsKey("key")) {
             String key = body.getString("key");
             if (key.length() < 2) {
-                whitelistNameString.append("²éÑ¯°×Ãûµ¥¹Ø¼ü´Ê:").append(key).append("½á¹ûÈçÏÂ:\n");
-                whitelistNameString.append("ÇëÊ¹ÓÃÁ½¸ö×ÖÄ¸¼°ÒÔÉÏµÄ¹Ø¼ü´Ê½øĞĞ²éÑ¯!");
+                whitelistNameString.append("æŸ¥è¯¢ç™½åå•å…³é”®è¯:").append(key).append("ç»“æœå¦‚ä¸‹:\n");
+                whitelistNameString.append("è¯·ä½¿ç”¨ä¸¤ä¸ªå­—æ¯åŠä»¥ä¸Šçš„å…³é”®è¯è¿›è¡ŒæŸ¥è¯¢!");
                 rBody.put("list", whitelistNameString);
                 sendMessage("queryWl", rBody);
                 return true;
             }
-            whitelistNameString.append("²éÑ¯°×Ãûµ¥¹Ø¼ü´Ê:").append(key).append("½á¹ûÈçÏÂ:\n");
+            whitelistNameString.append("æŸ¥è¯¢ç™½åå•å…³é”®è¯:").append(key).append("ç»“æœå¦‚ä¸‹:\n");
             List<String> filterList = SetController.searchInSet(whiteList, key);
             if (filterList.isEmpty()) {
-                whitelistNameString.append("ÎŞ½á¹û\n");
+                whitelistNameString.append("æ— ç»“æœ\n");
             } else {
                 for (String plName : filterList) {
                     whitelistNameString.append(plName).append("\n");
                 }
-                whitelistNameString.append("¹²ÓĞ").append(filterList.size()).append("¸ö½á¹û");
+                whitelistNameString.append("å…±æœ‰").append(filterList.size()).append("ä¸ªç»“æœ");
             }
             rBody.put("list", whitelistNameString);
             sendMessage("queryWl", rBody);
         } else if (body.containsKey("page")) {
             int page = body.getInteger("page");
-            whitelistNameString.append("·şÄÚ°×Ãûµ¥ÈçÏÂ:\n");
+            whitelistNameString.append("æœå†…ç™½åå•å¦‚ä¸‹:\n");
             List<List<String>> splitedNameList = SetController.chunkSet(whiteList, 10);
             List<String> currentNameList = splitedNameList.get(page - 1);
             if (page - 1 > splitedNameList.size()) {
-                whitelistNameString.append("Ã»ÓĞ¸ÃÒ³Âë\n");
-                whitelistNameString.append("¹²ÓĞ").append(splitedNameList.size()).append("Ò³\nÇëÊ¹ÓÃ/²é°×Ãûµ¥ {Ò³Âë}À´·­Ò³");
+                whitelistNameString.append("æ²¡æœ‰è¯¥é¡µç \n");
+                whitelistNameString.append("å…±æœ‰").append(splitedNameList.size()).append("é¡µ\nè¯·ä½¿ç”¨/æŸ¥ç™½åå• {é¡µç }æ¥ç¿»é¡µ");
             } else {
                 for (String plName : currentNameList) {
                     whitelistNameString.append(plName).append("\n");
                 }
-                whitelistNameString.append("¹²ÓĞ").append(splitedNameList.size()).append("Ò³£¬µ±Ç°ÎªµÚ").append(page).append("Ò³\nÇëÊ¹ÓÃ/²é°×Ãûµ¥ {Ò³Âë}À´·­Ò³");
+                whitelistNameString.append("å…±æœ‰").append(splitedNameList.size()).append("é¡µï¼Œå½“å‰ä¸ºç¬¬").append(page).append("é¡µ\nè¯·ä½¿ç”¨/æŸ¥ç™½åå• {é¡µç }æ¥ç¿»é¡µ");
             }
             rBody.put("list", whitelistNameString);
             sendMessage("queryWl", rBody);
         } else {
-            whitelistNameString.append("·şÄÚ°×Ãûµ¥ÈçÏÂ:\n");
+            whitelistNameString.append("æœå†…ç™½åå•å¦‚ä¸‹:\n");
             List<List<String>> splitedNameList = SetController.chunkSet(whiteList, 10);
             if (splitedNameList.isEmpty()) {
-                whitelistNameString.append("ÎŞ½á¹û\n");
+                whitelistNameString.append("æ— ç»“æœ\n");
             } else {
                 List<String> currentNameList = splitedNameList.get(0);
                 for (String plName : currentNameList) {
                     whitelistNameString.append(plName).append("\n");
                 }
             }
-            whitelistNameString.append("¹²ÓĞ").append(splitedNameList.size()).append("Ò³£¬µ±Ç°ÎªµÚ1Ò³\nÇëÊ¹ÓÃ/²é°×Ãûµ¥ {Ò³Âë}À´·­Ò³");
+            whitelistNameString.append("å…±æœ‰").append(splitedNameList.size()).append("é¡µï¼Œå½“å‰ä¸ºç¬¬1é¡µ\nè¯·ä½¿ç”¨/æŸ¥ç™½åå• {é¡µç }æ¥ç¿»é¡µ");
             rBody.put("list", whitelistNameString);
             sendMessage("queryWl", rBody);
         }

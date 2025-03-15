@@ -6,10 +6,10 @@ import org.allaymc.api.server.Server;
 
 @Slf4j
 public class Shaked extends EventRunner {
-    private HuHoBot plugin = HuHoBot.getPlugin();
+    private final HuHoBot plugin = HuHoBot.getPlugin();
 
     private void shakedProcess(){
-        plugin.getClientManager().setShouldReconnect(true);
+        HuHoBot.getClientManager().setShouldReconnect(true);
         HuHoBot.getClientManager().cancelCurrentTask();
         HuHoBot.getClientManager().setAutoDisConnectTask();
         Server.getInstance().getScheduler().scheduleRepeating(plugin, ()->{
@@ -24,23 +24,23 @@ public class Shaked extends EventRunner {
         String msg = body.getString("msg");
         switch (code) {
             case 1:
-                log.info("与服务端握手成功.");
+                log.info("涓庢湇鍔＄鎻℃墜鎴愬姛.");
                 shakedProcess();
                 break;
             case 2:
-                log.info("握手完成!,附加消息:{}", msg);
+                log.info("鎻℃墜瀹屾垚!,闄勫姞娑堟伅:{}", msg);
                 shakedProcess();
                 break;
             case 3:
-                log.error("握手失败，客户端密钥错误.");
-                plugin.getClientManager().setShouldReconnect(false);
+                log.error("鎻℃墜澶辫触锛屽鎴风瀵嗛挜閿欒.");
+                HuHoBot.getClientManager().setShouldReconnect(false);
                 break;
             case 6:
-                log.info("与服务端握手成功，服务端等待绑定...");
+                log.info("涓庢湇鍔＄鎻℃墜鎴愬姛锛屾湇鍔＄绛夊緟缁戝畾...");
                 shakedProcess();
                 break;
             default:
-                log.error("握手失败，原因{}", msg);
+                log.error("鎻℃墜澶辫触锛屽師鍥爗}", msg);
         }
         return true;
     }

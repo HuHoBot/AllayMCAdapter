@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class SendConfig extends EventRunner {
-    private HuHoBot plugin = HuHoBot.getPlugin();
+    private final HuHoBot plugin = HuHoBot.getPlugin();
 
     @Override
     public boolean run() {
@@ -14,8 +14,8 @@ public class SendConfig extends EventRunner {
         config.setServerId(body.getString("serverId"));
         config.setHashKey(body.getString("hashKey"));
         config.save();
-        log.info("ÅäÖÃÎÄ¼şÒÑ½ÓÊÜ.");
-        log.info("×Ô¶¯¶Ï¿ªÁ¬½ÓÒÔË¢ĞÂÅäÖÃÎÄ¼ş...");
+        log.info("é…ç½®æ–‡ä»¶å·²æ¥å—.");
+        log.info("è‡ªåŠ¨æ–­å¼€è¿æ¥ä»¥åˆ·æ–°é…ç½®æ–‡ä»¶...");
         HuHoBot.getClientManager().shutdownClient();
         return true;
     }

@@ -10,7 +10,7 @@ public class AddAllowList extends EventRunner {
         if(Server.getInstance().addToWhitelist(XboxId)){
             PluginConfig config = this.getConfig();
             String name = config.getServerName();
-            respone(name + "ÒÑ½ÓÊÜÌí¼ÓÃûÎª" + XboxId + "µÄ°×Ãûµ¥ÇëÇó", "success");
+            respone(name + "å·²æ¥å—æ·»åŠ åä¸º" + XboxId + "çš„ç™½åå•è¯·æ±‚", "success");
         }
 
         return true;

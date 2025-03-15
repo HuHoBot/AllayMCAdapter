@@ -3,13 +3,11 @@ package cn.huohuas001.huHoBot;
 import cn.huohuas001.huHoBot.Command.HuHoBotCommand;
 import cn.huohuas001.huHoBot.NetEvent.*;
 import cn.huohuas001.huHoBot.Settings.PluginConfig;
-import cn.huohuas001.huHoBot.Tools.ConsoleSender;
 import com.alibaba.fastjson2.JSONObject;
 import eu.okaeri.configs.ConfigManager;
 import lombok.extern.slf4j.Slf4j;
 import org.allaymc.api.command.CommandResult;
 import org.allaymc.api.command.CommandSender;
-import org.allaymc.api.i18n.I18n;
 import org.allaymc.api.plugin.Plugin;
 import org.allaymc.api.registry.Registries;
 import org.allaymc.api.server.Server;
@@ -24,8 +22,8 @@ public class HuHoBot extends Plugin {
     private static HuHoBot instance;
     private static final String CONFIG_FILE_NAME = "plugins/HuHoBot/config.yml";
     private static PluginConfig config;
-    private static WebsocketClientManager clientManager; //Websocket¿Í»§¶Ë
-    private Map<String, EventRunner> eventList = new HashMap<>(); //ÊÂ¼şÁĞ±í
+    private static WebsocketClientManager clientManager; //Websocketå®¢æˆ·ç«¯
+    private final Map<String, EventRunner> eventList = new HashMap<>(); //äº‹ä»¶åˆ—è¡¨
 
     public bindRequest bindRequestObj;
 
@@ -33,24 +31,24 @@ public class HuHoBot extends Plugin {
     public void onLoad() {
         instance = this;
 
-        // ´´½¨ÅäÖÃ¹ÜÀíÆ÷
+        // åˆ›å»ºé…ç½®ç®¡ç†å™¨
         config = ConfigManager.create(
                 PluginConfig.class,
                 Utils.createConfigInitializer(Path.of(CONFIG_FILE_NAME)
                 )
         );
 
-        // ³õÊ¼»¯Ä¬ÈÏÖµ
+        // åˆå§‹åŒ–é»˜è®¤å€¼
         config.initializeDefaults();
         config.save();
 
-        //×¢²áÃüÁî
+        //æ³¨å†Œå‘½ä»¤
         Registries.COMMANDS.register(new HuHoBotCommand());
 
-        //×¢²áÊÂ¼ş
+        //æ³¨å†Œäº‹ä»¶
         totalRegEvent();
 
-        //Á¬½Ó
+        //è¿æ¥
         clientManager = new WebsocketClientManager();
         clientManager.connectServer();
 
@@ -58,10 +56,10 @@ public class HuHoBot extends Plugin {
     }
 
     /**
-     * ×¢²áWebsocketÊÂ¼ş
+     * æ³¨å†ŒWebsocketäº‹ä»¶
      *
-     * @param eventName ÊÂ¼şÃû³Æ
-     * @param event     ÊÂ¼ş¶ÔÏó
+     * @param eventName äº‹ä»¶åç§°
+     * @param event     äº‹ä»¶å¯¹è±¡
      */
     private void registerEvent(String eventName, EventRunner event) {
         eventList.put(eventName, event);
@@ -69,7 +67,7 @@ public class HuHoBot extends Plugin {
 
 
     /**
-     * Í³Ò»ÊÂ¼ş×¢²á
+     * ç»Ÿä¸€äº‹ä»¶æ³¨å†Œ
      */
     private void totalRegEvent() {
         registerEvent("sendConfig", new SendConfig());
@@ -99,9 +97,9 @@ public class HuHoBot extends Plugin {
         if (event != null) {
             event.EventCall(packId, body);
         }else{
-            log.error("ÔÚ´¦ÀíÏûÏ¢ÊÇÓöµ½´íÎó: Î´ÖªµÄÏûÏ¢ÀàĞÍ{}", type);
-            log.error("´Ë´íÎó¾ßÓĞ²»¿ÉÈİ´íĞÔ!Çë¼ì²é²å¼şÊÇ·ñÎª×îĞÂ!");
-            log.info("ÕıÔÚ¶Ï¿ªÁ¬½Ó...");
+            log.error("åœ¨å¤„ç†æ¶ˆæ¯æ˜¯é‡åˆ°é”™è¯¯: æœªçŸ¥çš„æ¶ˆæ¯ç±»å‹{}", type);
+            log.error("æ­¤é”™è¯¯å…·æœ‰ä¸å¯å®¹é”™æ€§!è¯·æ£€æŸ¥æ’ä»¶æ˜¯å¦ä¸ºæœ€æ–°!");
+            log.info("æ­£åœ¨æ–­å¼€è¿æ¥...");
             clientManager.shutdownClient();
         }
     }
@@ -121,40 +119,40 @@ public class HuHoBot extends Plugin {
     public void runCommand(String command, String packId) {
         CommandSender orginalSender = Server.getInstance();
         CommandResult result = Registries.COMMANDS.execute(orginalSender, command);
-        String resultTextBuilder = "Ôİ²»Ö§³Ö·µ»ØÖµ.";
+        String resultTextBuilder = "æš‚ä¸æ”¯æŒè¿”å›å€¼.";
         if(result.isSuccess()){
-            clientManager.getClient().respone("ÒÑÖ´ĞĞ,ÃüÁî»Øµ÷ÈçÏÂ:\n" + resultTextBuilder, "success", packId);
+            clientManager.getClient().respone("å·²æ‰§è¡Œ,å‘½ä»¤å›è°ƒå¦‚ä¸‹:\n" + resultTextBuilder, "success", packId);
         }else{
-            clientManager.getClient().respone("ÒÑÖ´ĞĞ,ÃüÁî»Øµ÷ÈçÏÂ:\n" + resultTextBuilder, "error", packId);
+            clientManager.getClient().respone("å·²æ‰§è¡Œ,å‘½ä»¤å›è°ƒå¦‚ä¸‹:\n" + resultTextBuilder, "error", packId);
         }
 
     }
 
     /**
-     * ·µ»ØÊÇ·ñÒÑ¾­±»°ó¶¨³É¹¦
+     * è¿”å›æ˜¯å¦å·²ç»è¢«ç»‘å®šæˆåŠŸ
      *
-     * @return ÊÇ·ñ°ó¶¨³É¹¦
+     * @return æ˜¯å¦ç»‘å®šæˆåŠŸ
      */
     public boolean isBind() {
         return config.getHashKey() != null;
     }
 
     /**
-     * ÔÚ¿ØÖÆÌ¨Êä³ö°ó¶¨ID
+     * åœ¨æ§åˆ¶å°è¾“å‡ºç»‘å®šID
      */
     public void sendBindMessage() {
         if (!isBind()) {
             String serverId = config.getServerId();
-            String message = "·şÎñÆ÷ÉĞÎ´ÔÚ»úÆ÷ÈË½øĞĞ°ó¶¨£¬ÇëÔÚÈºÄÚÊäÈë\"/°ó¶¨ " + serverId + "\"";
+            String message = "æœåŠ¡å™¨å°šæœªåœ¨æœºå™¨äººè¿›è¡Œç»‘å®šï¼Œè¯·åœ¨ç¾¤å†…è¾“å…¥\"/ç»‘å®š " + serverId + "\"";
             log.warn(message);
         }
 
     }
 
     /**
-     * ÖØÁ¬HuHoBot·şÎñÆ÷
+     * é‡è¿HuHoBotæœåŠ¡å™¨
      *
-     * @return ÊÇ·ñÁ¬½Ó³É¹¦
+     * @return æ˜¯å¦è¿æ¥æˆåŠŸ
      */
     public boolean reconnect() {
         if (clientManager.isOpen()) {
@@ -165,9 +163,9 @@ public class HuHoBot extends Plugin {
     }
 
     /**
-     * ¶ÏÁ¬HuHoBot·şÎñÆ÷
+     * æ–­è¿HuHoBotæœåŠ¡å™¨
      *
-     * @return ÊÇ·ñ¶ÏÁ¬³É¹¦
+     * @return æ˜¯å¦æ–­è¿æˆåŠŸ
      */
     public boolean disConnectServer() {
         clientManager.setShouldReconnect(false);

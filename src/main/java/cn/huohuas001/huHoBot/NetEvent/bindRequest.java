@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 
 @Slf4j
 public class bindRequest extends EventRunner {
@@ -16,7 +15,7 @@ public class bindRequest extends EventRunner {
     @Override
     public boolean run() {
         String bindCode = body.getString("bindCode");
-        log.info("ÊÕµ½Ò»¸öĞÂµÄ°ó¶¨ÇëÇó£¬ÈçÈ·ÈÏ°ó¶¨£¬ÇëÊäÈë\"/huhobot bind {}\"À´½øĞĞÈ·ÈÏ", bindCode);
+        log.info("æ”¶åˆ°ä¸€ä¸ªæ–°çš„ç»‘å®šè¯·æ±‚ï¼Œå¦‚ç¡®è®¤ç»‘å®šï¼Œè¯·è¾“å…¥\"/huhobot bind {}\"æ¥è¿›è¡Œç¡®è®¤", bindCode);
         bindMap.put(bindCode,packId);
         return true;
     }
