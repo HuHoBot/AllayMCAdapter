@@ -53,7 +53,7 @@ jobs:
             -Dorg.gradle.daemon=false
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
-        if: success() && contains(github.ref_name, 'master')
+        if: success() && contains(github.ref_name, 'main')
         with:
           path: build/libs/*.jar
           retention-days: 1  # 仅保留1天临时文件

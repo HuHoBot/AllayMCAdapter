@@ -2,7 +2,7 @@ name: Build with Gradle
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "main","dev" ]
     paths:
       - .github/workflows/gradle.yml
       - src/**
@@ -46,6 +46,6 @@ jobs:
             -Dorg.gradle.daemon=false
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
-        if: success() && contains(github.ref_name, 'master')
+        if: success() && contains(github.ref_name, 'main')
         with:
           path: build/libs/*.jar
