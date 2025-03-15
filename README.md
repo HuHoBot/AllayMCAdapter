@@ -17,7 +17,7 @@
 | 部署复杂度  | ❌ 需搭建完整机器人框架     | ✅ 即装即用，一键绑定       |
 | 服务器兼容性 | ❌ 部分面板服不支持       | ✅ 全平台兼容，有网即用      |
 | 协议更新影响 | ❌ 需要频繁适配新协议      | ✅ 协议无关设计，相对稳定     |
-
+****
 ## 🚀 功能特性
 
 ### 核心功能
@@ -61,7 +61,7 @@
 ### 快速开始
 
 1. **访问 GitHub Releases 页面**：
-- 打开浏览器，访问 [HuHoBot-AllayAdapter Releases](https://github.com/HuHoBot/SpigotAdapter/releases)
+- 打开浏览器，访问 [HuHoBot-AllayAdapter Releases](https://github.com/HuHoBot/AllayMCAdapter/releases)
 - 下载最新版本的 `HuHoBot-vx.x.x-AllayMC.jar` 文件
 
 2. **放置插件文件**：
