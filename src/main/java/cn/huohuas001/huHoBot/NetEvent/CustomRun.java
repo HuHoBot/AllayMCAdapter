@@ -1,6 +1,7 @@
 package cn.huohuas001.huHoBot.NetEvent;
 
 
+import cn.huohuas001.huHoBot.Api.BotCustomCommand;
 import cn.huohuas001.huHoBot.HuHoBot;
 import cn.huohuas001.huHoBot.Settings.PluginConfig;
 
@@ -19,8 +20,11 @@ public class CustomRun extends EventRunner {
         // 测试查找功能
         PluginConfig.CustomCommand result = commandMap.get(keyWord);
         if (result == null) {
-            //Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> Bukkit.getPluginManager().callEvent(new BotCustomCommand(keyWord,param,packId,false)));
-            respone("无效的关键字", "error");
+            BotCustomCommand event = new BotCustomCommand(keyWord, body, packId, false);
+
+            if(!event.isCancelled()){
+                respone("无效的关键字", "error");
+            }
             return true;
         }
 

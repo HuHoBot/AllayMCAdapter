@@ -1,10 +1,10 @@
 package cn.huohuas001.huHoBot;
 
+import cn.huohuas001.config.ServerConfig;
 import com.alibaba.fastjson2.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.allaymc.api.scheduler.Scheduler;
 import org.allaymc.api.server.Server;
-import cn.huohuas001.config.ServerConfig;
 
 import java.net.URI;
 import java.net.URISyntaxException;

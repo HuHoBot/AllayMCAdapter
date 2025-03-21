@@ -1,5 +1,6 @@
 package cn.huohuas001.huHoBot.NetEvent;
 
+import cn.huohuas001.huHoBot.Api.BotCustomCommand;
 import cn.huohuas001.huHoBot.Settings.PluginConfig;
 
 
@@ -16,7 +17,11 @@ public class CustomRunAdmin extends EventRunner {
         // 测试查找功能
         PluginConfig.CustomCommand result = commandMap.get(keyWord);
         if (result == null) {
-            respone("无效的关键字", "error");
+            BotCustomCommand event = new BotCustomCommand(keyWord, body, packId, true);
+
+            if(!event.isCancelled()){
+                respone("无效的关键字", "error");
+            }
             return true;
         }
 

@@ -11,7 +11,7 @@ public class DelAllowList extends EventRunner {
         if(Server.getInstance().removeFromWhitelist(XboxId)){
             PluginConfig config = this.getConfig();
             String name = config.getServerName();
-            respone(name + "ÒÑ½ÓÊÜÉ¾³ıÃûÎª" + XboxId + "µÄ°×Ãûµ¥ÇëÇó", "success");
+            respone(name + "å·²æ¥å—åˆ é™¤åä¸º" + XboxId + "çš„ç™½åå•è¯·æ±‚", "success");
         }
         return true;
     }

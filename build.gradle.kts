@@ -7,7 +7,7 @@ plugins {
 
 group = "cn.huohuas001.huHoBot"
 description = "HuHoBot Allay Adapter"
-version = "0.0.1"
+version = "0.0.2"
 
 java {
     toolchain {
@@ -29,6 +29,7 @@ dependencies {
 
     implementation("org.java-websocket:Java-WebSocket:1.5.4")
     implementation("com.alibaba.fastjson2:fastjson2:2.0.52")
+    implementation(group = "com.github.MineBuilders", name = "allaymc-kotlinx", version = "master-SNAPSHOT")
 
     annotationProcessor(group = "org.projectlombok", name = "lombok", version = "1.18.34")
 }
@@ -67,6 +68,7 @@ sourceSets {
 
 // 确保编译前先执行生成任务
 tasks.compileJava {
+    dependsOn("clean")
     dependsOn("generateServerConfig")
 }
 

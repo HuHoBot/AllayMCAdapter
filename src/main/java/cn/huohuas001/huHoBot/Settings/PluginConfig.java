@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 // 主配置类
-@Names(strategy = NameStrategy.IDENTITY) // 保持字段名原样输出
+@Names(strategy = NameStrategy.IDENTITY)
 public class PluginConfig extends OkaeriConfig {
 
     // region 核心配置

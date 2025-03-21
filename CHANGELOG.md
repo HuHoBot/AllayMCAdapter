@@ -1,3 +1,3 @@
-# HuHoBot-Allay-Adapter v0.0.1
+# HuHoBot-Allay-Adapter v0.0.2
 
-1. 初始化版本
+1. 更新BotCustomCommand事件

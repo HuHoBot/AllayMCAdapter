@@ -8,17 +8,17 @@ import java.util.stream.Collectors;
 
 public class SetController {
     /**
-     * ½«Ò»¸öSet¼¯ºÏ×ª»»ÎªList£¬È»ºó·Ö¸î³É¶à¸ö×ÓList¡£
+     * å°†ä¸€ä¸ªSeté›†åˆè½¬æ¢ä¸ºListï¼Œç„¶ååˆ†å‰²æˆå¤šä¸ªå­Listã€‚
      *
-     * @param set      Òª·Ö¸îµÄSet¼¯ºÏ¡£
-     * @param size     Ã¿¸ö×ÓListµÄ×î´óÈİÁ¿¡£
-     * @param <String> Set¼¯ºÏÖĞÔªËØµÄÀàĞÍ¡£
-     * @return ·Ö¸îºóµÄListÁĞ±í¡£
+     * @param set      è¦åˆ†å‰²çš„Seté›†åˆã€‚
+     * @param size     æ¯ä¸ªå­Listçš„æœ€å¤§å®¹é‡ã€‚
+     * @param <String> Seté›†åˆä¸­å…ƒç´ çš„ç±»å‹ã€‚
+     * @return åˆ†å‰²åçš„Liståˆ—è¡¨ã€‚
      */
     public static <String> List<List<String>> chunkSet(Set<String> set, int size) {
-        // ½«Set×ª»»ÎªList
+        // å°†Setè½¬æ¢ä¸ºList
         List<String> list = set.stream().collect(Collectors.toList());
-        // Ê¹ÓÃchunkList·½·¨½øĞĞ·ÖÆ¬
+        // ä½¿ç”¨chunkListæ–¹æ³•è¿›è¡Œåˆ†ç‰‡
         return chunkList(list, size);
     }
 
