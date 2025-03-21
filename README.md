@@ -2,7 +2,7 @@
 
 [![GitHub Release](https://img.shields.io/github/v/release/HuHoBot/AllayMCAdapter?style=for-the-badge)](https://github.com/HuHoBot/SpigotAdapter/releases)
 [![License](https://img.shields.io/github/license/HuHoBot/AllayMCAdapter?style=for-the-badge)](https://github.com/HuHoBot/SpigotAdapter/blob/main/LICENSE)
-[![Build Status](https://img.shields.io/github/actions/workflow/status/HuHoBot/AllayMCAdapter/release.yml?style=for-the-badge)](https://github.com/HuHoBot/SpigotAdapter/actions)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/HuHoBot/AllayMCAdapter/build.yml?style=for-the-badge)](https://github.com/HuHoBot/SpigotAdapter/actions)
 
 专为AllayMC设计的下一代基岩版服务器管理解决方案，提供安全的无第三方QQ机器人依赖管理体验。
 
