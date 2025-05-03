@@ -21,6 +21,7 @@ public class CustomRun extends EventRunner {
         PluginConfig.CustomCommand result = commandMap.get(keyWord);
         if (result == null) {
             BotCustomCommand event = new BotCustomCommand(keyWord, body, packId, false);
+            event.call();
 
             if(!event.isCancelled()){
                 respone("无效的关键字", "error");

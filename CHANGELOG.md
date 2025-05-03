@@ -1,4 +1,3 @@
-# HuHoBot-Allay-Adapter v0.0.4
+# HuHoBot-Allay-Adapter v0.0.5
 
-- feat:适配Allay-Api: 0.3.0
-- feat:与其他适配器同步config中的motd字段
+- fix: 修复自定义事件不能正常触发的问题
