@@ -10,17 +10,17 @@ public class EventRunner {
     JSONObject body;
 
     void respone(String msg, String type) {
-        WsClient client = HuHoBot.getPlugin().getClientManager().getClient();
+        WsClient client = HuHoBot.getClientManager().getClient();
         client.respone(msg, type, packId);
     }
 
     void sendMessage(String type, JSONObject body) {
-        WsClient client = HuHoBot.getPlugin().getClientManager().getClient();
+        WsClient client = HuHoBot.getClientManager().getClient();
         client.sendMessage(type, body, packId);
     }
 
     PluginConfig getConfig() {
-        return HuHoBot.getPlugin().getConfig();
+        return HuHoBot.getConfig();
     }
 
     void runCommand(String command) {

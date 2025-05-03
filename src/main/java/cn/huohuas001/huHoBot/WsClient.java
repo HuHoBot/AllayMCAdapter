@@ -6,6 +6,8 @@ import cn.huohuas001.huHoBot.Tools.PackId;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import lombok.extern.slf4j.Slf4j;
+import org.allaymc.api.scheduler.Scheduler;
+import org.allaymc.api.server.Server;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
@@ -48,7 +50,10 @@ public class WsClient extends WebSocketClient {
             }
             responseFutureList.remove(packId);
         } else {
-            plugin.onWsMsg(jsonData);
+            Scheduler scheduler = Server.getInstance().getScheduler();
+            scheduler.runLater(HuHoBot.getPlugin(), ()->{
+                plugin.onWsMsg(jsonData);
+            });
         }
     }
 
