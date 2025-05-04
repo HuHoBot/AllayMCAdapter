@@ -91,8 +91,11 @@ serverId:
 # 通信加密密钥 (绑定后自动获取)
 # ! 请勿手动修改，留空即可
 hashKey: 
-# 群聊消息格式 (可用变量: {nick}, {msg})
-chatFormatGroup: 群:<{nick}> {msg}
+chatFormat:
+  from_game: "<{name}> {msg}" #服内消息转发到群内时的文本
+  from_group: "群:<{nick}> {msg}" #群内消息转发到服内时的文本
+  post_chat: true #是否在群内发送消息到服务器内
+  post_prefix: "" #群内消息转发到服内时的前缀
 # MOTD服务器地址
 # 格式: 地址:端口 (示例: play.easecation.net:19132)
 motdUrl: play.easecation.net:19132
@@ -129,8 +132,10 @@ customCommand:
 </details>
 
 <details>
-<summary>🤖 怎么开启消息互通？</summary>
-本机器人不支持群服消息互通，因官方机器人API限制每个群每月仅能发送三条主动消息
+<summary>💬 关于群服消息互通</summary>
+当调用`/发信息`时，可以在`五分钟内`回复`5次`该消息，机器人会优先选择最新的消息进行回复
+<br/>
+如果没有找到可以回复的消息，则无法发送消息
 </details>
 
 <details>
