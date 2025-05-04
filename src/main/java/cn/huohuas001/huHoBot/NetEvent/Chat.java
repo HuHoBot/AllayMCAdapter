@@ -9,7 +9,7 @@ public class Chat extends EventRunner {
         String nick = body.getString("nick");
         String msg = body.getString("msg");
         PluginConfig config = this.getConfig();
-        String message = config.getChatFormatGroup().replace("{nick}", nick).replace("{msg}", msg);
+        String message = config.getChatConfig().getFromGroup().replace("{nick}", nick).replace("{msg}", msg);
         Server.getInstance().broadcastText(message);
         return true;
     }

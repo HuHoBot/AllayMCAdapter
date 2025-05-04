@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 // 主配置类
 @Names(strategy = NameStrategy.IDENTITY)
 public class PluginConfig extends OkaeriConfig {
+    private final transient int CurrentVersion = 2;
 
     // region Getters & Setters
     // region 核心配置
@@ -36,9 +37,45 @@ public class PluginConfig extends OkaeriConfig {
 
     // region 聊天配置
     @Getter
-    @Comment("群聊消息格式 (可用变量: {nick}, {msg})")
+    @Comment({
+            "聊天消息配置",
+            "from_game: 游戏端消息格式 (可用变量: {name}, {msg})",
+            "from_group: 群聊消息格式 (可用变量: {nick}, {msg})",
+            "post_chat: 是否转发聊天消息",
+            "post_prefix: 消息转发前缀"
+    })
+    @CustomKey("chatConfig")
+    private ChatConfig chatConfig = new ChatConfig();
+
+    @Names(strategy = NameStrategy.IDENTITY)
+    public static class ChatConfig extends OkaeriConfig {
+        @Comment("游戏端消息格式")
+        @CustomKey("from_game")
+        private String fromGame = "<{name}> {msg}";
+
+        @Comment("群聊消息格式")
+        @CustomKey("from_group")
+        private String fromGroup = "群:<{nick}> {msg}";
+
+        @Comment("是否转发聊天消息")
+        @CustomKey("post_chat")
+        private boolean postChat = true;
+
+        @Comment("消息转发前缀")
+        @CustomKey("post_prefix")
+        private String postPrefix = "";
+
+        // Getters
+        public String getFromGame() { return fromGame; }
+        public String getFromGroup() { return fromGroup; }
+        public boolean isPostChat() { return postChat; }
+        public String getPostPrefix() { return postPrefix; }
+    }
+
+    // 弃用旧字段并标记为 transient 防止持久化
+    @Deprecated
     @CustomKey("chatFormatGroup")
-    private String chatFormatGroup = "群:<{nick}> {msg}";
+    private transient String chatFormatGroup;
     // endregion
 
     // region 新的MOTD配置结构
@@ -162,7 +199,7 @@ public class PluginConfig extends OkaeriConfig {
         }
 
         // 自动迁移逻辑（当版本号不存在时）
-        if (this.configVersion < 1) {
+        if (this.configVersion < CurrentVersion) {
             performConfigMigration();
         }
     }
@@ -179,6 +216,16 @@ public class PluginConfig extends OkaeriConfig {
 
         // 标记旧字段为已弃用（不再持久化）
         this.motdUrl = null;
-        this.configVersion = 1;
+
+        // 新增聊天配置迁移
+        if (this.chatFormatGroup != null && !this.chatFormatGroup.isEmpty()) {
+            this.chatConfig.fromGroup = this.chatFormatGroup;
+            this.chatConfig.postChat = true;
+            this.chatConfig.postPrefix = "";
+        }
+        this.chatFormatGroup = null; // 清除旧字段
+
+
+        this.configVersion = 2; // 更新版本号
     }
 }

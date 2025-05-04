@@ -39,10 +39,16 @@ public class HuHoBotCommand extends SimpleCommand {
         }
     }
 
+    private void onReload(CommandContext sender) {
+        HuHoBot.reloadConfig();
+        sender.addOutput(TextFormat.GOLD + "已重载配置文件.");
+    }
+
     private void onHelp(CommandContext sender) {
         sender.addOutput(TextFormat.AQUA + "HuHoBot 操作相关命令");
         sender.addOutput(TextFormat.GOLD + ">" + TextFormat.DARK_GRAY + "/huhobot reconnect - 重新连接服务器");
         sender.addOutput(TextFormat.GOLD + ">" + TextFormat.DARK_GRAY + "/huhobot disconnect - 断开服务器连接");
+        sender.addOutput(TextFormat.GOLD + ">" + TextFormat.DARK_GRAY + "/huhobot reload - 重载配置文件");
         sender.addOutput(TextFormat.GOLD + ">" + TextFormat.DARK_GRAY + "/huhobot bind <code:String> - 确认绑定");
     }
 
@@ -72,6 +78,12 @@ public class HuHoBotCommand extends SimpleCommand {
                 .key("help")
                 .exec(context -> {
                     onHelp(context);
+                    return context.success();
+                })
+                .root()
+                .key("reload")
+                .exec(context -> {
+                    onReload(context);
                     return context.success();
                 });
 

@@ -1,33 +1,40 @@
 package cn.huohuas001.huHoBot;
 
 import cn.huohuas001.huHoBot.Command.HuHoBotCommand;
+import cn.huohuas001.huHoBot.GameEvent.onChat;
 import cn.huohuas001.huHoBot.NetEvent.*;
 import cn.huohuas001.huHoBot.Settings.PluginConfig;
 import com.alibaba.fastjson2.JSONObject;
 import eu.okaeri.configs.ConfigManager;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.allaymc.api.command.CommandResult;
 import org.allaymc.api.command.CommandSender;
 import org.allaymc.api.plugin.Plugin;
 import org.allaymc.api.registry.Registries;
-import org.allaymc.api.scheduler.Task;
 import org.allaymc.api.server.Server;
 import org.allaymc.api.utils.Utils;
 
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
 public class HuHoBot extends Plugin {
     private static HuHoBot instance;
     private static final String CONFIG_FILE_NAME = "plugins/HuHoBot/config.yml";
+    @Getter
     private static PluginConfig config;
+    @Getter
     private static WebsocketClientManager clientManager; //Websocket客户端
     private final Map<String, EventRunner> eventList = new HashMap<>(); //事件列表
 
     public bindRequest bindRequestObj;
+
+    @Override
+    public void onEnable() {
+        Server.getInstance().getEventBus().registerListener(new onChat());
+    }
 
     @Override
     public void onLoad() {
@@ -110,12 +117,9 @@ public class HuHoBot extends Plugin {
         return instance;
     }
 
-    public static PluginConfig getConfig(){
-        return config;
-    }
-
-    public static WebsocketClientManager getClientManager() {
-        return clientManager;
+    public static void reloadConfig(){
+        config.load();
+        config.save();
     }
 
     public void runCommand(String command, String packId) {
