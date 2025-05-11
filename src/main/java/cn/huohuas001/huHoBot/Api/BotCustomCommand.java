@@ -11,6 +11,7 @@ import java.util.List;
 public class BotCustomCommand extends Event implements CancellableEvent {
     @Getter
     private final String command;
+    @Getter
     private final JSONObject data;
     @Getter
     private final List<String> param;

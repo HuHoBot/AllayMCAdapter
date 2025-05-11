@@ -1,8 +1,5 @@
-# HuHoBot-Allay-Adapter v0.0.6
+# HuHoBot-Allay-Adapter v0.0.7
 
-feat(chat): 增加聊天事件处理功能
-
-- 新增 onChat 类实现聊天事件监听
-- 增加配置项支持聊天消息转发
-- 优化配置文件结构和版本管理
-- 添加 bStats 统计支持
+feat(chat): 适配Allay0.4.0
+fix(chat): 修复post_chat不能控制聊天转发
+feat(BotCustomCommand): 新增getData()接口
