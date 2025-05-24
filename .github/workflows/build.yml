@@ -108,6 +108,21 @@ jobs:
           name: release-artifacts
           path: artifacts
 
+      - name: Setup workspace
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}  # 去掉v前缀
+          echo '{"latest":"$VERSION"}' > artifacts/latest.json
+
+      - name: Upload to R2
+        uses: ryand56/r2-upload-action@latest
+        with:
+          r2-account-id: ${{ secrets.R2_ACCOUNT_ID }}
+          r2-access-key-id: ${{ secrets.R2_ACCESS_KEY_ID }}
+          r2-secret-access-key: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          r2-bucket: ${{ secrets.R2_BUCKET }}
+          source-dir: allay
+          destination-dir: artifacts
+
       - name: Create Release
         uses: softprops/action-gh-release@v1  # 改用更可靠的 Action
         with:
