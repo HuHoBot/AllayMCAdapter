@@ -1,5 +1,6 @@
 package cn.huohuas001.huHoBot.Tools;
 
+/*
 import org.allaymc.api.command.CommandResult;
 import org.allaymc.api.command.CommandSender;
 import org.allaymc.api.entity.Entity;
@@ -47,4 +48,4 @@ public class ConsoleSender implements CommandSender {
     public PermissionTree getPermissionTree() {
         return null;
     }
-}
+}*/

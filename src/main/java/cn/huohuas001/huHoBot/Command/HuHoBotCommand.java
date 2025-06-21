@@ -5,13 +5,13 @@ import cn.huohuas001.huHoBot.NetEvent.bindRequest;
 import org.allaymc.api.command.SimpleCommand;
 import org.allaymc.api.command.tree.CommandContext;
 import org.allaymc.api.command.tree.CommandTree;
-import org.allaymc.api.permission.DefaultPermissions;
+import org.allaymc.api.permission.PermissionGroups;
 import org.allaymc.api.utils.TextFormat;
 
 public class HuHoBotCommand extends SimpleCommand {
     public HuHoBotCommand() {
         super("huhobot", "HuHoBot's control command");
-        getPermissions().forEach(DefaultPermissions.OPERATOR::addPermission);
+        getPermissions().forEach(PermissionGroups.OPERATOR::addPermission);
 
     }
 

@@ -1,5 +1,3 @@
-# HuHoBot-Allay-Adapter v0.0.7
+# HuHoBot-Allay-Adapter v0.0.8
 
-feat(chat): 适配Allay0.4.0
-fix(chat): 修复post_chat不能控制聊天转发
-feat(BotCustomCommand): 新增getData()接口
+- **feat(Websocket)**: 重置项目Websocket底层，提升至`wss://`协议
