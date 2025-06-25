@@ -108,15 +108,8 @@ public class WebsocketClientManager {
         try {
             URI uri = new URI(websocketUrl);
             if (client == null || !client.isOpen()) {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Host", "agent-remote.txssb.cn");
-                headers.put("User-Agent", "HuHoBot/1.0");
-
-                // 创建带SSL上下文的客户端
-                SSLContext sslContext = createCloudflareSSLContext();
-                client = new WsClient(uri, this, headers, sslContext);
-
-                setShouldReconnect(true);
+                client = new WsClient(uri, this);
+                setShouldReconnect(true); // 设置是否重连
                 client.connect();
             }
             return true;
