@@ -1,4 +1,5 @@
 package cn.huohuas001.huHoBot.Api;
+
 import cn.huohuas001.huHoBot.HuHoBot;
 import cn.huohuas001.huHoBot.WsClient;
 import com.alibaba.fastjson2.JSONObject;

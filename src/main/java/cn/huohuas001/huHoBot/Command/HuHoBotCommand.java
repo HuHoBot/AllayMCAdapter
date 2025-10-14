@@ -40,9 +40,9 @@ public class HuHoBotCommand extends Command {
                 .exec(context -> {
                     String Code = context.getResult(1);
                     bindRequest obj = HuHoBot.getPlugin().bindRequestObj;
-                    if(obj.confirmBind(Code)){
+                    if (obj.confirmBind(Code)) {
                         context.addOutput(TextFormat.GOLD + "已向服务器发送确认绑定请求，请等待服务端下发配置文件.");
-                    }else{
+                    } else {
                         context.addOutput(TextFormat.DARK_RED + "绑定码错误，请重新输入.");
                     }
                     return context.success();

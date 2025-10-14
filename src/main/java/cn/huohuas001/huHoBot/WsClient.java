@@ -10,11 +10,7 @@ import org.allaymc.api.scheduler.Scheduler;
 import org.allaymc.api.server.Server;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
-import org.java_websocket.drafts.Draft_6455;
 
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLSocketFactory;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
@@ -87,7 +83,7 @@ public class WsClient extends WebSocketClient {
             responseFutureList.remove(packId);
         } else {
             Scheduler scheduler = Server.getInstance().getScheduler();
-            scheduler.runLater(HuHoBot.getPlugin(), ()->{
+            scheduler.runLater(HuHoBot.getPlugin(), () -> {
                 plugin.onWsMsg(jsonData);
             });
         }
@@ -104,7 +100,6 @@ public class WsClient extends WebSocketClient {
         log.error("连接发生错误!错误信息:{}", ex.getMessage());
         clientManager.clientReconnect();
     }
-
 
 
     /**

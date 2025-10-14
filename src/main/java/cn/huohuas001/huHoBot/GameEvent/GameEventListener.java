@@ -8,7 +8,7 @@ import org.allaymc.api.eventbus.event.player.PlayerChatEvent;
 
 public class GameEventListener {
     @EventHandler
-    private void onPlayerChat(PlayerChatEvent event){
+    private void onPlayerChat(PlayerChatEvent event) {
         String message = event.getMessage();
         String playerName = event.getPlayer().getDisplayName();
 

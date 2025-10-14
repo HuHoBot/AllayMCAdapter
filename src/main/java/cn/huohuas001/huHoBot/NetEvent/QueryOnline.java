@@ -1,6 +1,5 @@
 package cn.huohuas001.huHoBot.NetEvent;
 
-import cn.huohuas001.huHoBot.HuHoBot;
 import com.alibaba.fastjson2.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.allaymc.api.entity.interfaces.EntityPlayer;

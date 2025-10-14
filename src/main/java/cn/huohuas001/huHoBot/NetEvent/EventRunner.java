@@ -37,5 +37,4 @@ public class EventRunner {
         return true;
     }
 
-    ;
 }

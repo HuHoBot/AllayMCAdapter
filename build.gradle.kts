@@ -24,8 +24,8 @@ dependencies {
     compileOnly(group = "org.allaymc.allay", name = "api", version = "0.13.0")
     compileOnly(group = "org.projectlombok", name = "lombok", version = "1.18.34")
 
-    implementation("org.java-websocket:Java-WebSocket:1.5.4")
-    implementation("com.alibaba.fastjson2:fastjson2:2.0.52")
+    implementation(group = "org.java-websocket", name = "Java-WebSocket", version = "1.5.4")
+    implementation(group = "com.alibaba.fastjson2", name = "fastjson2", version = "2.0.52")
     implementation(group = "eu.okaeri", name = "okaeri-configs-yaml-snakeyaml", version = "5.0.13")
 
     annotationProcessor(group = "org.projectlombok", name = "lombok", version = "1.18.34")

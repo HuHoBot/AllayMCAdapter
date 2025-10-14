@@ -4,7 +4,6 @@ import cn.huohuas001.huHoBot.Tools.SetController;
 import com.alibaba.fastjson2.JSONObject;
 import org.allaymc.api.server.Server;
 
-
 import java.util.List;
 import java.util.Set;
 

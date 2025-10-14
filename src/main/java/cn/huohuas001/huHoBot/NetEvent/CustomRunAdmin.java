@@ -3,7 +3,6 @@ package cn.huohuas001.huHoBot.NetEvent;
 import cn.huohuas001.huHoBot.Api.BotCustomCommand;
 import cn.huohuas001.huHoBot.Settings.PluginConfig;
 
-
 import java.util.List;
 import java.util.Map;
 
@@ -19,7 +18,7 @@ public class CustomRunAdmin extends EventRunner {
         if (result == null) {
             BotCustomCommand event = new BotCustomCommand(keyWord, body, packId, true);
 
-            if(!event.isCancelled()){
+            if (!event.isCancelled()) {
                 respone("无效的关键字", "error");
             }
             return true;
@@ -28,7 +27,7 @@ public class CustomRunAdmin extends EventRunner {
         String command = result.getCommand();
         for (int i = 0; i < param.size(); i++) {
             int replaceNum = i + 1;
-            command = command.replace("&" + String.valueOf(replaceNum), param.get(i));
+            command = command.replace("&" + replaceNum, param.get(i));
         }
 
         runCommand(command);
