@@ -7,7 +7,7 @@ public class AddAllowList extends EventRunner {
     @Override
     public boolean run() {
         String XboxId = body.getString("xboxid");
-        if(Server.getInstance().getPlayerService().addToWhitelist(XboxId)){
+        if(Server.getInstance().getPlayerManager().addToWhitelist(XboxId)){
             PluginConfig config = this.getConfig();
             String name = config.getServerName();
             respone(name + "已接受添加名为" + XboxId + "的白名单请求", "success");

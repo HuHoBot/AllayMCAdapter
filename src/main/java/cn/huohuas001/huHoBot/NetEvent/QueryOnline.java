@@ -13,7 +13,7 @@ import java.util.UUID;
 public class QueryOnline extends EventRunner {
     @Override
     public boolean run() {
-        Map<UUID, EntityPlayer> onlinePlayers = Server.getInstance().getPlayerService().getPlayers();
+        Map<UUID, EntityPlayer> onlinePlayers = Server.getInstance().getPlayerManager().getPlayers();
 
         //获取motd Config
         String server_ip = getConfig().getMotd().getServerIp();

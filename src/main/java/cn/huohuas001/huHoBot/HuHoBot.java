@@ -1,11 +1,12 @@
 package cn.huohuas001.huHoBot;
 
 import cn.huohuas001.huHoBot.Command.HuHoBotCommand;
-import cn.huohuas001.huHoBot.GameEvent.onChat;
+import cn.huohuas001.huHoBot.GameEvent.GameEventListener;
 import cn.huohuas001.huHoBot.NetEvent.*;
 import cn.huohuas001.huHoBot.Settings.PluginConfig;
 import com.alibaba.fastjson2.JSONObject;
 import eu.okaeri.configs.ConfigManager;
+import eu.okaeri.configs.yaml.snakeyaml.YamlSnakeYamlConfigurer;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.allaymc.api.command.CommandResult;
@@ -33,7 +34,7 @@ public class HuHoBot extends Plugin {
 
     @Override
     public void onEnable() {
-        Server.getInstance().getEventBus().registerListener(new onChat());
+        Server.getInstance().getEventBus().registerListener(new GameEventListener());
     }
 
     @Override
@@ -43,8 +44,18 @@ public class HuHoBot extends Plugin {
         // 创建配置管理器
         config = ConfigManager.create(
                 PluginConfig.class,
-                Utils.createConfigInitializer(Path.of(CONFIG_FILE_NAME)
-                )
+                it -> {
+                    // Specify configurer implementation, optionally additional serdes packages
+                    it.withConfigurer(new YamlSnakeYamlConfigurer());
+                    // Specify Path, File or pathname
+                    it.withBindFile(Path.of(CONFIG_FILE_NAME));
+                    // Automatic removal of undeclared keys
+                    it.withRemoveOrphans(true);
+                    // Save the file if it does not exist
+                    it.saveDefaults();
+                    // Load and save to update comments/new fields
+                    it.load(true);
+                }
         );
 
         // 初始化默认值

@@ -11,7 +11,7 @@ import java.util.Set;
 public class QueryAllowList extends EventRunner {
     @Override
     public boolean run() {
-        Set<String> whiteList = Server.getInstance().getPlayerService().getWhitelistedPlayers();
+        Set<String> whiteList = Server.getInstance().getPlayerManager().getWhitelistedPlayers();
         StringBuilder whitelistNameString = new StringBuilder();
         JSONObject rBody = new JSONObject();
         if (body.containsKey("key")) {
