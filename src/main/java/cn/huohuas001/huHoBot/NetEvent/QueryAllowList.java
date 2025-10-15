@@ -4,14 +4,13 @@ import cn.huohuas001.huHoBot.Tools.SetController;
 import com.alibaba.fastjson2.JSONObject;
 import org.allaymc.api.server.Server;
 
-
 import java.util.List;
 import java.util.Set;
 
 public class QueryAllowList extends EventRunner {
     @Override
     public boolean run() {
-        Set<String> whiteList = Server.getInstance().getPlayerService().getWhitelistedPlayers();
+        Set<String> whiteList = Server.getInstance().getPlayerManager().getWhitelistedPlayers();
         StringBuilder whitelistNameString = new StringBuilder();
         JSONObject rBody = new JSONObject();
         if (body.containsKey("key")) {

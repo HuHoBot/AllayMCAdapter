@@ -1,11 +1,12 @@
 package cn.huohuas001.huHoBot;
 
 import cn.huohuas001.huHoBot.Command.HuHoBotCommand;
-import cn.huohuas001.huHoBot.GameEvent.onChat;
+import cn.huohuas001.huHoBot.GameEvent.GameEventListener;
 import cn.huohuas001.huHoBot.NetEvent.*;
 import cn.huohuas001.huHoBot.Settings.PluginConfig;
 import com.alibaba.fastjson2.JSONObject;
 import eu.okaeri.configs.ConfigManager;
+import eu.okaeri.configs.yaml.snakeyaml.YamlSnakeYamlConfigurer;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.allaymc.api.command.CommandResult;
@@ -13,7 +14,6 @@ import org.allaymc.api.command.CommandSender;
 import org.allaymc.api.plugin.Plugin;
 import org.allaymc.api.registry.Registries;
 import org.allaymc.api.server.Server;
-import org.allaymc.api.utils.Utils;
 
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -21,8 +21,8 @@ import java.util.Map;
 
 @Slf4j
 public class HuHoBot extends Plugin {
-    private static HuHoBot instance;
     private static final String CONFIG_FILE_NAME = "plugins/HuHoBot/config.yml";
+    private static HuHoBot instance;
     @Getter
     private static PluginConfig config;
     @Getter
@@ -31,9 +31,18 @@ public class HuHoBot extends Plugin {
 
     public bindRequest bindRequestObj;
 
+    public static HuHoBot getPlugin() {
+        return instance;
+    }
+
+    public static void reloadConfig() {
+        config.load();
+        config.save();
+    }
+
     @Override
     public void onEnable() {
-        Server.getInstance().getEventBus().registerListener(new onChat());
+        Server.getInstance().getEventBus().registerListener(new GameEventListener());
     }
 
     @Override
@@ -43,8 +52,18 @@ public class HuHoBot extends Plugin {
         // 创建配置管理器
         config = ConfigManager.create(
                 PluginConfig.class,
-                Utils.createConfigInitializer(Path.of(CONFIG_FILE_NAME)
-                )
+                it -> {
+                    // Specify configurer implementation, optionally additional serdes packages
+                    it.withConfigurer(new YamlSnakeYamlConfigurer());
+                    // Specify Path, File or pathname
+                    it.withBindFile(Path.of(CONFIG_FILE_NAME));
+                    // Automatic removal of undeclared keys
+                    it.withRemoveOrphans(true);
+                    // Save the file if it does not exist
+                    it.saveDefaults();
+                    // Load and save to update comments/new fields
+                    it.load(true);
+                }
         );
 
         // 初始化默认值
@@ -74,7 +93,6 @@ public class HuHoBot extends Plugin {
         eventList.put(eventName, event);
     }
 
-
     /**
      * 统一事件注册
      */
@@ -95,7 +113,7 @@ public class HuHoBot extends Plugin {
         registerEvent("bindRequest", bindRequestObj);
     }
 
-    public void onWsMsg(JSONObject data){
+    public void onWsMsg(JSONObject data) {
         JSONObject header = data.getJSONObject("header");
         JSONObject body = data.getJSONObject("body");
 
@@ -105,7 +123,7 @@ public class HuHoBot extends Plugin {
         EventRunner event = eventList.get(type);
         if (event != null) {
             event.EventCall(packId, body);
-        }else{
+        } else {
             log.error("在处理消息是遇到错误: 未知的消息类型{}", type);
             log.error("此错误具有不可容错性!请检查插件是否为最新!");
             log.info("正在断开连接...");
@@ -113,22 +131,13 @@ public class HuHoBot extends Plugin {
         }
     }
 
-    public static HuHoBot getPlugin(){
-        return instance;
-    }
-
-    public static void reloadConfig(){
-        config.load();
-        config.save();
-    }
-
     public void runCommand(String command, String packId) {
         CommandSender orginalSender = Server.getInstance();
         CommandResult result = Registries.COMMANDS.execute(orginalSender, command);
         String resultTextBuilder = "暂不支持返回值.";
-        if(result.isSuccess()){
+        if (result.isSuccess()) {
             clientManager.getClient().respone("已执行,命令回调如下:\n" + resultTextBuilder, "success", packId);
-        }else{
+        } else {
             clientManager.getClient().respone("已执行,命令回调如下:\n" + resultTextBuilder, "error", packId);
         }
 
@@ -178,5 +187,5 @@ public class HuHoBot extends Plugin {
         return clientManager.shutdownClient();
     }
 
-    
+
 }

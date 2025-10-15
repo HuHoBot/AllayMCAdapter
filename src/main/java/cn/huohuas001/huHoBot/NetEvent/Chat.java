@@ -10,8 +10,8 @@ public class Chat extends EventRunner {
         String msg = body.getString("msg");
         PluginConfig config = this.getConfig();
         String message = config.getChatConfig().getFromGroup().replace("{nick}", nick).replace("{msg}", msg);
-        if(config.getChatConfig().isPostChat()){
-            Server.getInstance().broadcastText(message);
+        if (config.getChatConfig().isPostChat()) {
+            Server.getInstance().getMessageChannel().broadcastMessage(message);
         }
         return true;
     }

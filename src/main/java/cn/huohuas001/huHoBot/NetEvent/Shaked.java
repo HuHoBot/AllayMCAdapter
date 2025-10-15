@@ -8,11 +8,11 @@ import org.allaymc.api.server.Server;
 public class Shaked extends EventRunner {
     private final HuHoBot plugin = HuHoBot.getPlugin();
 
-    private void shakedProcess(){
+    private void shakedProcess() {
         HuHoBot.getClientManager().setShouldReconnect(true);
         HuHoBot.getClientManager().cancelCurrentTask();
         HuHoBot.getClientManager().setAutoDisConnectTask();
-        Server.getInstance().getScheduler().scheduleRepeating(plugin, ()->{
+        Server.getInstance().getScheduler().scheduleRepeating(plugin, () -> {
             HuHoBot.getClientManager().sendHeart();
             return true;
         }, 5 * 20);

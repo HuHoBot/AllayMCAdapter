@@ -2,54 +2,15 @@ package cn.huohuas001.huHoBot.Command;
 
 import cn.huohuas001.huHoBot.HuHoBot;
 import cn.huohuas001.huHoBot.NetEvent.bindRequest;
-import org.allaymc.api.command.SimpleCommand;
-import org.allaymc.api.command.tree.CommandContext;
+import org.allaymc.api.command.Command;
 import org.allaymc.api.command.tree.CommandTree;
 import org.allaymc.api.permission.PermissionGroups;
 import org.allaymc.api.utils.TextFormat;
 
-public class HuHoBotCommand extends SimpleCommand {
+public class HuHoBotCommand extends Command {
     public HuHoBotCommand() {
         super("huhobot", "HuHoBot's control command");
         getPermissions().forEach(PermissionGroups.OPERATOR::addPermission);
-
-    }
-
-    private void onReconnect(CommandContext sender) {
-        if (HuHoBot.getPlugin().reconnect()) {
-            sender.addOutput(TextFormat.GOLD + "重连机器人成功.");
-        } else {
-            sender.addOutput(TextFormat.DARK_RED + "重连机器人失败：已在连接状态.");
-        }
-
-    }
-
-    private void onDisconnect(CommandContext sender) {
-        if (HuHoBot.getPlugin().disConnectServer()) {
-            sender.addOutput(TextFormat.GOLD + "已断开机器人连接.");
-        }
-    }
-
-    private void onBind(CommandContext sender, String args) {
-        bindRequest obj = HuHoBot.getPlugin().bindRequestObj;
-        if(obj.confirmBind(args)){
-            sender.addOutput(TextFormat.GOLD + "已向服务器发送确认绑定请求，请等待服务端下发配置文件.");
-        }else{
-            sender.addOutput(TextFormat.DARK_RED + "绑定码错误，请重新输入.");
-        }
-    }
-
-    private void onReload(CommandContext sender) {
-        HuHoBot.reloadConfig();
-        sender.addOutput(TextFormat.GOLD + "已重载配置文件.");
-    }
-
-    private void onHelp(CommandContext sender) {
-        sender.addOutput(TextFormat.AQUA + "HuHoBot 操作相关命令");
-        sender.addOutput(TextFormat.GOLD + ">" + TextFormat.DARK_GRAY + "/huhobot reconnect - 重新连接服务器");
-        sender.addOutput(TextFormat.GOLD + ">" + TextFormat.DARK_GRAY + "/huhobot disconnect - 断开服务器连接");
-        sender.addOutput(TextFormat.GOLD + ">" + TextFormat.DARK_GRAY + "/huhobot reload - 重载配置文件");
-        sender.addOutput(TextFormat.GOLD + ">" + TextFormat.DARK_GRAY + "/huhobot bind <code:String> - 确认绑定");
     }
 
     @Override
@@ -57,13 +18,20 @@ public class HuHoBotCommand extends SimpleCommand {
         tree.getRoot()
                 .key("reconnect")
                 .exec(context -> {
-                    onReconnect(context);
+                    if (HuHoBot.getPlugin().reconnect()) {
+                        context.addOutput(TextFormat.GOLD + "重连机器人成功.");
+                    } else {
+                        context.addOutput(TextFormat.DARK_RED + "重连机器人失败：已在连接状态.");
+                    }
+
                     return context.success();
                 })
                 .root()
                 .key("disconnect")
                 .exec(context -> {
-                    onDisconnect(context);
+                    if (HuHoBot.getPlugin().disConnectServer()) {
+                        context.addOutput(TextFormat.GOLD + "已断开机器人连接.");
+                    }
                     return context.success();
                 })
                 .root()
@@ -71,19 +39,29 @@ public class HuHoBotCommand extends SimpleCommand {
                 .str("code")
                 .exec(context -> {
                     String Code = context.getResult(1);
-                    onBind(context, Code);
+                    bindRequest obj = HuHoBot.getPlugin().bindRequestObj;
+                    if (obj.confirmBind(Code)) {
+                        context.addOutput(TextFormat.GOLD + "已向服务器发送确认绑定请求，请等待服务端下发配置文件.");
+                    } else {
+                        context.addOutput(TextFormat.DARK_RED + "绑定码错误，请重新输入.");
+                    }
                     return context.success();
                 })
                 .root()
                 .key("help")
                 .exec(context -> {
-                    onHelp(context);
+                    context.addOutput(TextFormat.AQUA + "HuHoBot 操作相关命令");
+                    context.addOutput(TextFormat.GOLD + ">" + TextFormat.DARK_GRAY + "/huhobot reconnect - 重新连接服务器");
+                    context.addOutput(TextFormat.GOLD + ">" + TextFormat.DARK_GRAY + "/huhobot disconnect - 断开服务器连接");
+                    context.addOutput(TextFormat.GOLD + ">" + TextFormat.DARK_GRAY + "/huhobot reload - 重载配置文件");
+                    context.addOutput(TextFormat.GOLD + ">" + TextFormat.DARK_GRAY + "/huhobot bind <code:String> - 确认绑定");
                     return context.success();
                 })
                 .root()
                 .key("reload")
                 .exec(context -> {
-                    onReload(context);
+                    HuHoBot.reloadConfig();
+                    context.addOutput(TextFormat.GOLD + "已重载配置文件.");
                     return context.success();
                 });
 
