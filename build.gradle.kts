@@ -47,7 +47,7 @@ tasks.register<Copy>("generateServerConfig") {
 
     filter { line ->
         line.replace("\${WS_SERVER_URL}",
-            project.findProperty("wsServerUrl")?.toString() ?: "ws://bot.axe.ink:2087"
+            project.findProperty("wsServerUrl")?.toString() ?: "ws://127.0.0.1:8080"
         )
     }
 
