@@ -1,7 +1,7 @@
-package cn.huohuas001.huHoBot.Command;
+package cn.huohuas001.huhobot.command;
 
-import cn.huohuas001.huHoBot.HuHoBot;
-import cn.huohuas001.huHoBot.NetEvent.bindRequest;
+import cn.huohuas001.huhobot.HuHoBot;
+import cn.huohuas001.huhobot.websocket.handler.BindRequest;
 import org.allaymc.api.command.Command;
 import org.allaymc.api.command.tree.CommandTree;
 import org.allaymc.api.permission.PermissionGroups;
@@ -18,7 +18,7 @@ public class HuHoBotCommand extends Command {
         tree.getRoot()
                 .key("reconnect")
                 .exec(context -> {
-                    if (HuHoBot.getPlugin().reconnect()) {
+                    if (HuHoBot.getInstance().reconnect()) {
                         context.addOutput(TextFormat.GOLD + "重连机器人成功.");
                     } else {
                         context.addOutput(TextFormat.DARK_RED + "重连机器人失败：已在连接状态.");
@@ -29,7 +29,7 @@ public class HuHoBotCommand extends Command {
                 .root()
                 .key("disconnect")
                 .exec(context -> {
-                    if (HuHoBot.getPlugin().disConnectServer()) {
+                    if (HuHoBot.getInstance().disConnectServer()) {
                         context.addOutput(TextFormat.GOLD + "已断开机器人连接.");
                     }
                     return context.success();
@@ -39,7 +39,7 @@ public class HuHoBotCommand extends Command {
                 .str("code")
                 .exec(context -> {
                     String Code = context.getResult(1);
-                    bindRequest obj = HuHoBot.getPlugin().bindRequestObj;
+                    BindRequest obj = HuHoBot.getInstance().getBindRequest();
                     if (obj.confirmBind(Code)) {
                         context.addOutput(TextFormat.GOLD + "已向服务器发送确认绑定请求，请等待服务端下发配置文件.");
                     } else {
@@ -63,6 +63,12 @@ public class HuHoBotCommand extends Command {
                     HuHoBot.reloadConfig();
                     context.addOutput(TextFormat.GOLD + "已重载配置文件.");
                     return context.success();
+                })
+                .root()
+                .key("test")
+                .exec(ctx -> {
+                    HuHoBot.getInstance().runCommand("version", "");
+                    return ctx.success();
                 });
 
     }

@@ -1,22 +1,19 @@
-package cn.huohuas001.huHoBot.NetEvent;
+package cn.huohuas001.huhobot.websocket.handler;
 
-import cn.huohuas001.huHoBot.HuHoBot;
+import cn.huohuas001.huhobot.HuHoBot;
 import com.alibaba.fastjson2.JSONObject;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Slf4j
-public class bindRequest extends EventRunner {
-    private final HuHoBot plugin = HuHoBot.getPlugin();
+public class BindRequest extends RequestHandler {
     private final Map<String, String> bindMap = new HashMap<>();
 
     @Override
     public boolean run() {
         String bindCode = body.getString("bindCode");
-        log.info("收到一个新的绑定请求，如确认绑定，请输入\"/huhobot bind {}\"来进行确认", bindCode);
-        bindMap.put(bindCode, packId);
+        HuHoBot.getInstance().getPluginLogger().info("收到一个新的绑定请求，如确认绑定，请输入\"/huhobot bind {}\"来进行确认", bindCode);
+        bindMap.put(bindCode, id);
         return true;
     }
 

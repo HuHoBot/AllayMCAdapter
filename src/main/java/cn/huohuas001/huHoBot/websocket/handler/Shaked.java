@@ -1,18 +1,19 @@
-package cn.huohuas001.huHoBot.NetEvent;
+package cn.huohuas001.huhobot.websocket.handler;
 
-import cn.huohuas001.huHoBot.HuHoBot;
-import lombok.extern.slf4j.Slf4j;
+import cn.huohuas001.huhobot.HuHoBot;
 import org.allaymc.api.server.Server;
+import org.allaymc.api.utils.TextFormat;
+import org.slf4j.Logger;
 
-@Slf4j
-public class Shaked extends EventRunner {
-    private final HuHoBot plugin = HuHoBot.getPlugin();
+public class Shaked extends RequestHandler {
+
+    private static final Logger log = HuHoBot.getInstance().getPluginLogger();
 
     private void shakedProcess() {
         HuHoBot.getClientManager().setShouldReconnect(true);
         HuHoBot.getClientManager().cancelCurrentTask();
         HuHoBot.getClientManager().setAutoDisConnectTask();
-        Server.getInstance().getScheduler().scheduleRepeating(plugin, () -> {
+        Server.getInstance().getScheduler().scheduleRepeating(HuHoBot.getInstance(), () -> {
             HuHoBot.getClientManager().sendHeart();
             return true;
         }, 5 * 20);
@@ -32,15 +33,16 @@ public class Shaked extends EventRunner {
                 shakedProcess();
                 break;
             case 3:
-                log.error("握手失败，客户端密钥错误.");
+                log.error("{}握手失败，客户端密钥错误.", TextFormat.RED);
                 HuHoBot.getClientManager().setShouldReconnect(false);
                 break;
             case 6:
                 log.info("与服务端握手成功，服务端等待绑定...");
                 shakedProcess();
+                HuHoBot.getInstance().sendBindMessage();
                 break;
             default:
-                log.error("握手失败，原因{}", msg);
+                log.error("{}握手失败，原因{}", TextFormat.RED, msg);
         }
         return true;
     }
