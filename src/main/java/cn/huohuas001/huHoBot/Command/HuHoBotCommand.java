@@ -63,12 +63,6 @@ public class HuHoBotCommand extends Command {
                     HuHoBot.reloadConfig();
                     context.addOutput(TextFormat.GOLD + "已重载配置文件.");
                     return context.success();
-                })
-                .root()
-                .key("test")
-                .exec(ctx -> {
-                    HuHoBot.getInstance().runCommand("version", "");
-                    return ctx.success();
                 });
 
     }
