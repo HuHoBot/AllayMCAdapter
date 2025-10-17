@@ -1,11 +1,11 @@
-package cn.huohuas001.huHoBot.NetEvent;
+package cn.huohuas001.huhobot.websocket.handler;
 
-import cn.huohuas001.huHoBot.HuHoBot;
-import lombok.extern.slf4j.Slf4j;
+import cn.huohuas001.huhobot.HuHoBot;
+import org.slf4j.Logger;
 
-@Slf4j
-public class ShutDown extends EventRunner {
-    private final HuHoBot plugin = HuHoBot.getPlugin();
+public class ShutDown extends RequestHandler {
+
+    private static final Logger log = HuHoBot.getInstance().getPluginLogger();
 
     @Override
     public boolean run() {

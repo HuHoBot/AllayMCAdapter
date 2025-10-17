@@ -5,9 +5,9 @@ plugins {
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
-group = "cn.huohuas001.huHoBot"
+group = "cn.huohuas001.huhobot"
 description = "HuHoBot Allay Adapter"
-version = "0.0.10"
+version = "0.1.0"
 
 java {
     toolchain {
@@ -21,7 +21,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly(group = "org.allaymc.allay", name = "api", version = "0.13.0")
+    compileOnly(group = "org.allaymc.allay", name = "api", version = "0.14.0")
     compileOnly(group = "org.projectlombok", name = "lombok", version = "1.18.34")
 
     implementation(group = "org.java-websocket", name = "Java-WebSocket", version = "1.5.4")

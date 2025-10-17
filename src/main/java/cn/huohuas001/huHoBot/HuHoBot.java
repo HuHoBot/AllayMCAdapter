@@ -1,16 +1,15 @@
-package cn.huohuas001.huHoBot;
+package cn.huohuas001.huhobot;
 
-import cn.huohuas001.huHoBot.Command.HuHoBotCommand;
-import cn.huohuas001.huHoBot.GameEvent.GameEventListener;
-import cn.huohuas001.huHoBot.NetEvent.*;
-import cn.huohuas001.huHoBot.Settings.PluginConfig;
+import cn.huohuas001.huhobot.command.HuHoBotCommand;
+import cn.huohuas001.huhobot.utils.HuHoBotCommandSender;
+import cn.huohuas001.huhobot.websocket.WSClientManager;
+import cn.huohuas001.huhobot.websocket.handler.*;
 import com.alibaba.fastjson2.JSONObject;
 import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.yaml.snakeyaml.YamlSnakeYamlConfigurer;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-import org.allaymc.api.command.CommandResult;
-import org.allaymc.api.command.CommandSender;
+import org.allaymc.api.eventbus.EventHandler;
+import org.allaymc.api.eventbus.event.player.PlayerChatEvent;
 import org.allaymc.api.plugin.Plugin;
 import org.allaymc.api.registry.Registries;
 import org.allaymc.api.server.Server;
@@ -19,20 +18,24 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
-@Slf4j
 public class HuHoBot extends Plugin {
+
     private static final String CONFIG_FILE_NAME = "plugins/HuHoBot/config.yml";
+
+    @Getter
     private static HuHoBot instance;
     @Getter
-    private static PluginConfig config;
+    private static HuHoBotConfig config;
     @Getter
-    private static WebsocketClientManager clientManager; //Websocket客户端
-    private final Map<String, EventRunner> eventList = new HashMap<>(); //事件列表
+    private static WSClientManager clientManager; //Websocket客户端
 
-    public bindRequest bindRequestObj;
+    private final Map<String, RequestHandler> requestHandlers; //事件处理器列表
 
-    public static HuHoBot getPlugin() {
-        return instance;
+    @Getter
+    private BindRequest bindRequest;
+
+    public HuHoBot() {
+        this.requestHandlers = new HashMap<>();
     }
 
     public static void reloadConfig() {
@@ -41,17 +44,12 @@ public class HuHoBot extends Plugin {
     }
 
     @Override
-    public void onEnable() {
-        Server.getInstance().getEventBus().registerListener(new GameEventListener());
-    }
-
-    @Override
     public void onLoad() {
         instance = this;
 
         // 创建配置管理器
         config = ConfigManager.create(
-                PluginConfig.class,
+                HuHoBotConfig.class,
                 it -> {
                     // Specify configurer implementation, optionally additional serdes packages
                     it.withConfigurer(new YamlSnakeYamlConfigurer());
@@ -66,51 +64,52 @@ public class HuHoBot extends Plugin {
                 }
         );
 
-        // 初始化默认值
-        config.initializeDefaults();
-        config.save();
-
         //注册命令
         Registries.COMMANDS.register(new HuHoBotCommand());
 
         //注册事件
-        totalRegEvent();
+        registerRequestHandlers();
 
+        pluginLogger.info("HuHoBot Loaded. By HuoHuas001");
+    }
+
+    @Override
+    public void onEnable() {
         //连接
-        clientManager = new WebsocketClientManager();
+        clientManager = new WSClientManager();
         clientManager.connectServer();
 
-        log.info("HuHoBot Loaded. By HuoHuas001");
+        Server.getInstance().getEventBus().registerListener(this);
     }
 
     /**
-     * 注册Websocket事件
+     * 注册Websocket请求处理器
      *
-     * @param eventName 事件名称
-     * @param event     事件对象
+     * @param requestName 请求名称
+     * @param handler     请求处理器
      */
-    private void registerEvent(String eventName, EventRunner event) {
-        eventList.put(eventName, event);
+    private void registerRequestHandler(String requestName, RequestHandler handler) {
+        requestHandlers.put(requestName, handler);
     }
 
     /**
-     * 统一事件注册
+     * 统一请求处理器注册
      */
-    private void totalRegEvent() {
-        registerEvent("sendConfig", new SendConfig());
-        registerEvent("shaked", new Shaked());
-        registerEvent("chat", new Chat());
-        registerEvent("add", new AddAllowList());
-        registerEvent("delete", new DelAllowList());
-        registerEvent("cmd", new RunCommand());
-        registerEvent("queryList", new QueryAllowList());
-        registerEvent("queryOnline", new QueryOnline());
-        registerEvent("shutdown", new ShutDown());
-        registerEvent("run", new CustomRun());
-        registerEvent("runAdmin", new CustomRunAdmin());
-        registerEvent("heart", new Heart());
-        bindRequestObj = new bindRequest();
-        registerEvent("bindRequest", bindRequestObj);
+    private void registerRequestHandlers() {
+        registerRequestHandler("sendConfig", new SendConfig());
+        registerRequestHandler("shaked", new Shaked());
+        registerRequestHandler("chat", new Chat());
+        registerRequestHandler("add", new EditAllowList(true));
+        registerRequestHandler("delete", new EditAllowList(false));
+        registerRequestHandler("cmd", new RunCommand());
+        registerRequestHandler("queryList", new QueryAllowList());
+        registerRequestHandler("queryOnline", new QueryOnline());
+        registerRequestHandler("shutdown", new ShutDown());
+        registerRequestHandler("run", new CustomRun(false));
+        registerRequestHandler("runAdmin", new CustomRun(true));
+        registerRequestHandler("heart", new Heart());
+        bindRequest = new BindRequest();
+        registerRequestHandler("bindRequest", bindRequest);
     }
 
     public void onWsMsg(JSONObject data) {
@@ -118,27 +117,27 @@ public class HuHoBot extends Plugin {
         JSONObject body = data.getJSONObject("body");
 
         String type = header.getString("type");
-        String packId = header.getString("id");
+        String id = header.getString("id");
 
-        EventRunner event = eventList.get(type);
-        if (event != null) {
-            event.EventCall(packId, body);
+        RequestHandler handler = requestHandlers.get(type);
+        if (handler != null) {
+            handler.handle(id, body);
         } else {
-            log.error("在处理消息是遇到错误: 未知的消息类型{}", type);
-            log.error("此错误具有不可容错性!请检查插件是否为最新!");
-            log.info("正在断开连接...");
+            pluginLogger.error("在处理消息是遇到错误: 未知的消息类型{}", type);
+            pluginLogger.error("此错误具有不可容错性!请检查插件是否为最新!");
+            pluginLogger.info("正在断开连接...");
             clientManager.shutdownClient();
         }
     }
 
-    public void runCommand(String command, String packId) {
-        CommandSender orginalSender = Server.getInstance();
-        CommandResult result = Registries.COMMANDS.execute(orginalSender, command);
-        String resultTextBuilder = "暂不支持返回值.";
+    public void runCommand(String command, String requestId) {
+        var sender = new HuHoBotCommandSender();
+        var result = Registries.COMMANDS.execute(sender, command);
+        var message = sender.getOutputs().toString();
         if (result.isSuccess()) {
-            clientManager.getClient().respone("已执行,命令回调如下:\n" + resultTextBuilder, "success", packId);
+            clientManager.getClient().response("已执行,命令回调如下:\n" + message, "success", requestId);
         } else {
-            clientManager.getClient().respone("已执行,命令回调如下:\n" + resultTextBuilder, "error", packId);
+            clientManager.getClient().response("已执行,命令回调如下:\n" + message, "error", requestId);
         }
 
     }
@@ -157,9 +156,7 @@ public class HuHoBot extends Plugin {
      */
     public void sendBindMessage() {
         if (!isBind()) {
-            String serverId = config.getServerId();
-            String message = "服务器尚未在机器人进行绑定，请在群内输入\"/绑定 " + serverId + "\"";
-            log.warn(message);
+            pluginLogger.warn("服务器尚未在机器人进行绑定，请在群内输入\"/绑定 " + config.getServerId() + "\"");
         }
 
     }
@@ -187,5 +184,23 @@ public class HuHoBot extends Plugin {
         return clientManager.shutdownClient();
     }
 
+    @EventHandler
+    private void onPlayerChat(PlayerChatEvent event) {
+        String message = event.getMessage();
+        String playerName = event.getPlayer().getDisplayName();
 
+        HuHoBotConfig config = HuHoBot.getConfig();
+
+        String format = config.getChatConfig().getFromGame();
+        String prefix = config.getChatConfig().getPostPrefix();
+        boolean isPostChat = config.getChatConfig().isPostChat();
+        String serverId = config.getServerId();
+        if (message.startsWith(prefix) && isPostChat) {
+            JSONObject body = new JSONObject();
+            body.put("serverId", serverId);
+            String formated = format.replace("{name}", playerName).replace("{msg}", message.substring(prefix.length()));
+            body.put("msg", formated);
+            HuHoBot.getClientManager().getClient().sendMessage("chat", body);
+        }
+    }
 }
