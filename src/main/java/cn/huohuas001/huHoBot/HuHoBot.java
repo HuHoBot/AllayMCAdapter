@@ -64,6 +64,10 @@ public class HuHoBot extends Plugin {
                 }
         );
 
+        // 初始化默认值
+        config.initializeDefaults();
+        config.save();
+
         //注册命令
         Registries.COMMANDS.register(new HuHoBotCommand());
 
