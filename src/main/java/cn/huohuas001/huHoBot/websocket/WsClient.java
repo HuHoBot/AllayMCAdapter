@@ -1,8 +1,9 @@
-package cn.huohuas001.huHoBot;
+package cn.huohuas001.huhobot.websocket;
 
 
-import cn.huohuas001.huHoBot.Settings.PluginConfig;
-import cn.huohuas001.huHoBot.Tools.PackId;
+import cn.huohuas001.huhobot.HuHoBot;
+import cn.huohuas001.huhobot.HuHoBotConfig;
+import cn.huohuas001.huhobot.utils.Utils;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import lombok.extern.slf4j.Slf4j;
@@ -17,10 +18,10 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 @Slf4j
-public class WsClient extends WebSocketClient {
+public class WSClient extends WebSocketClient {
     private final Map<String, CompletableFuture<JSONObject>> responseFutureList = new HashMap<>();
     private final HuHoBot plugin;
-    private final WebsocketClientManager clientManager;
+    private final WSClientManager clientManager;
 
 
     /*public WsClient(URI serverUri, WebsocketClientManager clientManager,
@@ -55,9 +56,9 @@ public class WsClient extends WebSocketClient {
     }*/
 
 
-    public WsClient(URI serverUri, WebsocketClientManager clientManager) {
+    public WSClient(URI serverUri, WSClientManager clientManager) {
         super(serverUri);
-        this.plugin = HuHoBot.getPlugin();
+        this.plugin = HuHoBot.getInstance();
         //this.logger = plugin.getLogger();
         this.clientManager = clientManager;
     }
@@ -73,17 +74,17 @@ public class WsClient extends WebSocketClient {
         //logger.info("Received: " + message);
         JSONObject jsonData = JSON.parseObject(message);
         JSONObject header = jsonData.getJSONObject("header");
-        String packId = header.getString("id");
+        String requestId = header.getString("id");
 
-        if (responseFutureList.containsKey(packId)) {
-            CompletableFuture<JSONObject> responseFuture = responseFutureList.get(packId);
+        if (responseFutureList.containsKey(requestId)) {
+            CompletableFuture<JSONObject> responseFuture = responseFutureList.get(requestId);
             if (responseFuture != null && !responseFuture.isDone()) {
                 responseFuture.complete(jsonData);
             }
-            responseFutureList.remove(packId);
+            responseFutureList.remove(requestId);
         } else {
             Scheduler scheduler = Server.getInstance().getScheduler();
-            scheduler.runLater(HuHoBot.getPlugin(), () -> {
+            scheduler.runLater(HuHoBot.getInstance(), () -> {
                 plugin.onWsMsg(jsonData);
             });
         }
@@ -109,22 +110,21 @@ public class WsClient extends WebSocketClient {
      * @param body 消息数据
      */
     public void sendMessage(String type, JSONObject body) {
-        String newPackId = PackId.getPackID();
-        sendMessage(type, body, newPackId);
+        sendMessage(type, body, Utils.randomID());
     }
 
     /**
      * 向服务端发送一条消息
      *
-     * @param type   消息类型
-     * @param body   消息数据
-     * @param packId 消息Id
+     * @param type      消息类型
+     * @param body      消息数据
+     * @param requestId 消息Id
      */
-    public void sendMessage(String type, JSONObject body, String packId) {
+    public void sendMessage(String type, JSONObject body, String requestId) {
         JSONObject data = new JSONObject();
         JSONObject header = new JSONObject();
         header.put("type", type);
-        header.put("id", packId);
+        header.put("id", requestId);
         data.put("header", header);
         data.put("body", body);
         if (this.isOpen()) {
@@ -140,32 +140,31 @@ public class WsClient extends WebSocketClient {
      * @return 消息回报体
      */
     public CompletableFuture<JSONObject> sendRequestAndAwaitResponse(String type, JSONObject body) {
-        String newPackId = PackId.getPackID();
-        return sendRequestAndAwaitResponse(type, body, newPackId);
+        return sendRequestAndAwaitResponse(type, body, Utils.randomID());
     }
 
     /**
      * 向服务端发送一条消息并获取返回值
      *
-     * @param type   消息类型
-     * @param body   消息数据
-     * @param packId 消息Id
+     * @param type      消息类型
+     * @param body      消息数据
+     * @param requestId 消息Id
      * @return 消息回报体
      */
-    public CompletableFuture<JSONObject> sendRequestAndAwaitResponse(String type, JSONObject body, String packId) {
+    public CompletableFuture<JSONObject> sendRequestAndAwaitResponse(String type, JSONObject body, String requestId) {
         if (this.isOpen()) {
             //打包数据并发送
             JSONObject data = new JSONObject();
             JSONObject header = new JSONObject();
             header.put("type", type);
-            header.put("id", packId);
+            header.put("id", requestId);
             data.put("header", header);
             data.put("body", body);
             this.send(data.toJSONString());
 
             //存储回报
             CompletableFuture<JSONObject> responseFuture = new CompletableFuture<>();
-            responseFutureList.put(packId, responseFuture);
+            responseFutureList.put(requestId, responseFuture);
 
             return responseFuture;
         } else {
@@ -179,29 +178,28 @@ public class WsClient extends WebSocketClient {
      * @param msg  回报消息
      * @param type 回报类型：success|error
      */
-    public void respone(String msg, String type) {
-        String newPackId = PackId.getPackID();
-        this.respone(msg, type, newPackId);
+    public void response(String msg, String type) {
+        this.response(msg, type, Utils.randomID());
     }
 
     /**
      * 向服务端发送一条回报
      *
-     * @param msg    回报消息
-     * @param type   回报类型：success|error
-     * @param packId 回报Id
+     * @param msg       回报消息
+     * @param type      回报类型：success|error
+     * @param requestId 回报Id
      */
-    public void respone(String msg, String type, String packId) {
+    public void response(String msg, String type, String requestId) {
         JSONObject body = new JSONObject();
         body.put("msg", msg);
-        sendMessage(type, body, packId);
+        sendMessage(type, body, requestId);
     }
 
     /**
      * 向服务端握手
      */
     private void shakeHand() {
-        PluginConfig config = HuHoBot.getConfig();
+        HuHoBotConfig config = HuHoBot.getConfig();
         JSONObject body = new JSONObject();
         body.put("serverId", config.getServerId());
         if (config.get("hashKey") == null) {
@@ -210,7 +208,7 @@ public class WsClient extends WebSocketClient {
             body.put("hashKey", config.getHashKey());
         }
         body.put("name", config.getServerName());
-        body.put("version", HuHoBot.getPlugin().getPluginContainer().descriptor().getVersion());
+        body.put("version", HuHoBot.getInstance().getPluginContainer().descriptor().getVersion());
         body.put("platform", "allay");
         sendMessage("shakeHand", body);
     }

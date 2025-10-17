@@ -1,11 +1,10 @@
-package cn.huohuas001.huHoBot.Settings;
+package cn.huohuas001.huhobot;
 
-import cn.huohuas001.huHoBot.Tools.PackId;
+import cn.huohuas001.huhobot.utils.Utils;
 import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
 import eu.okaeri.configs.annotation.CustomKey;
-import eu.okaeri.configs.annotation.NameStrategy;
-import eu.okaeri.configs.annotation.Names;
+import eu.okaeri.configs.annotation.Exclude;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,9 +14,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 // 主配置类
-@Names(strategy = NameStrategy.IDENTITY)
-public class PluginConfig extends OkaeriConfig {
-    private final transient int CurrentVersion = 2;
+@SuppressWarnings("ALL")
+public class HuHoBotConfig extends OkaeriConfig {
+    @Exclude
+    private static final int CURRENT_VERSION = 2;
 
     // region Getters & Setters
     // region 核心配置
@@ -47,49 +47,44 @@ public class PluginConfig extends OkaeriConfig {
             "post_chat: 是否转发聊天消息",
             "post_prefix: 消息转发前缀"
     })
-    @CustomKey("chatConfig")
-    private final ChatConfig chatConfig = new ChatConfig();
+    private ChatConfig chatConfig = new ChatConfig();
+
     // 弃用旧字段并标记为 transient 防止持久化
     @Deprecated
-    @CustomKey("chatFormatGroup")
     private transient String chatFormatGroup;
+
     // region 新的MOTD配置结构
+    @Getter
     @Comment({
             "MOTD服务器配置",
             "api: 状态查询API地址，使用{server_ip}和{server_port}作为占位符",
             "text: 显示文本格式，使用{online}作为在线人数占位符"
     })
-    @CustomKey("motd")
-    private final MotdConfig motd = new MotdConfig();
+    private MotdConfig motd = new MotdConfig();
     // endregion
+
     @Getter
-    @Comment({
-            "服务器显示名称"
-    })
-    @CustomKey("serverName")
-    private final String serverName = "AllayMC";
+    @Comment("服务器显示名称")
+    private String serverName = "AllayMC";
+
     // region 自定义命令
     @Getter
     @Comment("自定义命令列表")
-    @CustomKey("customCommand")
-    private final List<CustomCommand> customCommand = Arrays.asList(
+    private List<CustomCommand> customCommand = Arrays.asList(
             new CustomCommand("加白名", "whitelist add &1", 0),
             new CustomCommand("管理加白名", "whitelist add &1", 1)
     );
     // endregion
+
     // 在PluginConfig类顶部添加版本字段
     @Comment("配置版本 (检测到版本小于1时会自动迁移旧配置)")
     @CustomKey("version")
     private int configVersion = 1;
     // endregion
+
     // 废弃原有motdUrl字段
     @Deprecated
-    @CustomKey("motdUrl")
     private transient String motdUrl;
-
-    public MotdConfig getMotd() {
-        return motd;
-    }
 
     @Deprecated
     public String getMotdUrl() {
@@ -106,11 +101,11 @@ public class PluginConfig extends OkaeriConfig {
     // 初始化方法示例
     public void initializeDefaults() {
         if (this.serverId == null) {
-            this.serverId = PackId.getPackID();
+            this.serverId = Utils.randomID();
         }
 
         // 自动迁移逻辑（当版本号不存在时）
-        if (this.configVersion < CurrentVersion) {
+        if (this.configVersion < CURRENT_VERSION) {
             performConfigMigration();
         }
     }
@@ -140,11 +135,12 @@ public class PluginConfig extends OkaeriConfig {
     }
     // endregion
 
-    @Names(strategy = NameStrategy.IDENTITY)
+    @Getter
     public static class ChatConfig extends OkaeriConfig {
+        // Getters
         @Comment("游戏端消息格式")
         @CustomKey("from_game")
-        private final String fromGame = "<{name}> {msg}";
+        private String fromGame = "<{name}> {msg}";
 
         @Comment("群聊消息格式")
         @CustomKey("from_group")
@@ -157,27 +153,11 @@ public class PluginConfig extends OkaeriConfig {
         @Comment("消息转发前缀")
         @CustomKey("post_prefix")
         private String postPrefix = "";
-
-        // Getters
-        public String getFromGame() {
-            return fromGame;
-        }
-
-        public String getFromGroup() {
-            return fromGroup;
-        }
-
-        public boolean isPostChat() {
-            return postChat;
-        }
-
-        public String getPostPrefix() {
-            return postPrefix;
-        }
     }
 
-    @Names(strategy = NameStrategy.IDENTITY)
+    @Getter
     public static class MotdConfig extends OkaeriConfig {
+        // Getters
         @Comment("服务器IP地址")
         @CustomKey("server_ip")
         private String serverIp = "play.easecation.net";
@@ -187,47 +167,23 @@ public class PluginConfig extends OkaeriConfig {
         private int serverPort = 19132;
 
         @Comment("状态查询API地址")
-        private final String api = "https://motdbe.blackbe.work/status_img?host={server_ip}:{server_port}";
+        private String api = "https://motdbe.blackbe.work/status_img?host={server_ip}:{server_port}";
 
         @Comment("显示文本格式")
-        private final String text = "共{online}人在线";
+        private String text = "共{online}人在线";
 
         @Comment("是否输出在线列表")
         @CustomKey("output_online_list")
-        private final boolean outputOnlineList = true;
+        private boolean outputOnlineList = true;
 
         @Comment("是否发布状态图片")
         @CustomKey("post_img")
-        private final boolean postImg = true;
-
-        // Getters
-        public String getServerIp() {
-            return serverIp;
-        }
-
-        public int getServerPort() {
-            return serverPort;
-        }
-
-        public String getApi() {
-            return api;
-        }
-
-        public String getText() {
-            return text;
-        }
-
-        public boolean isOutputOnlineList() {
-            return outputOnlineList;
-        }
-
-        public boolean isPostImg() {
-            return postImg;
-        }
+        private boolean postImg = true;
     }
 
-    @Names(strategy = NameStrategy.IDENTITY)
+    @Getter
     public static class CustomCommand extends OkaeriConfig {
+        // Getters 必须存在
         @Comment("触发指令 (支持中文)")
         private String key;
 
@@ -245,19 +201,6 @@ public class PluginConfig extends OkaeriConfig {
             this.key = key;
             this.command = command;
             this.permission = permission;
-        }
-
-        // Getters 必须存在
-        public String getKey() {
-            return key;
-        }
-
-        public String getCommand() {
-            return command;
-        }
-
-        public int getPermission() {
-            return permission;
         }
     }
 }

@@ -1,26 +1,26 @@
-package cn.huohuas001.huHoBot.NetEvent;
+package cn.huohuas001.huhobot.websocket.handler;
 
+import cn.huohuas001.huhobot.HuHoBot;
 import com.alibaba.fastjson2.JSONObject;
-import lombok.extern.slf4j.Slf4j;
 import org.allaymc.api.entity.interfaces.EntityPlayer;
 import org.allaymc.api.server.Server;
 
 import java.util.Map;
 import java.util.UUID;
 
-@Slf4j
-public class QueryOnline extends EventRunner {
+public class QueryOnline extends RequestHandler {
     @Override
     public boolean run() {
         Map<UUID, EntityPlayer> onlinePlayers = Server.getInstance().getPlayerManager().getPlayers();
 
-        //获取motd Config
-        String server_ip = getConfig().getMotd().getServerIp();
-        int server_port = getConfig().getMotd().getServerPort();
-        String api = getConfig().getMotd().getApi();
-        String text = getConfig().getMotd().getText();
-        boolean output_online_list = getConfig().getMotd().isOutputOnlineList();
-        boolean post_img = getConfig().getMotd().isPostImg();
+        //获取motd
+        var config = HuHoBot.getConfig();
+        String server_ip = config.getMotd().getServerIp();
+        int server_port = config.getMotd().getServerPort();
+        String api = config.getMotd().getApi();
+        String text = config.getMotd().getText();
+        boolean output_online_list = config.getMotd().isOutputOnlineList();
+        boolean post_img = config.getMotd().isPostImg();
 
         StringBuilder onlineNameString = new StringBuilder();
 

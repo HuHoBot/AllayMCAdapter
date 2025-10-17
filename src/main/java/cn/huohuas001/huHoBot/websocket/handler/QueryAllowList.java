@@ -1,13 +1,13 @@
-package cn.huohuas001.huHoBot.NetEvent;
+package cn.huohuas001.huhobot.websocket.handler;
 
-import cn.huohuas001.huHoBot.Tools.SetController;
+import cn.huohuas001.huhobot.utils.CollectionUtils;
 import com.alibaba.fastjson2.JSONObject;
 import org.allaymc.api.server.Server;
 
 import java.util.List;
 import java.util.Set;
 
-public class QueryAllowList extends EventRunner {
+public class QueryAllowList extends RequestHandler {
     @Override
     public boolean run() {
         Set<String> whiteList = Server.getInstance().getPlayerManager().getWhitelistedPlayers();
@@ -23,7 +23,7 @@ public class QueryAllowList extends EventRunner {
                 return true;
             }
             whitelistNameString.append("查询白名单关键词:").append(key).append("结果如下:\n");
-            List<String> filterList = SetController.searchInSet(whiteList, key);
+            List<String> filterList = CollectionUtils.searchInSet(whiteList, key);
             if (filterList.isEmpty()) {
                 whitelistNameString.append("无结果\n");
             } else {
@@ -37,7 +37,7 @@ public class QueryAllowList extends EventRunner {
         } else if (body.containsKey("page")) {
             int page = body.getInteger("page");
             whitelistNameString.append("服内白名单如下:\n");
-            List<List<String>> splitedNameList = SetController.chunkSet(whiteList, 10);
+            List<List<String>> splitedNameList = CollectionUtils.chunkSet(whiteList, 10);
             List<String> currentNameList = splitedNameList.get(page - 1);
             if (page - 1 > splitedNameList.size()) {
                 whitelistNameString.append("没有该页码\n");
@@ -52,7 +52,7 @@ public class QueryAllowList extends EventRunner {
             sendMessage("queryWl", rBody);
         } else {
             whitelistNameString.append("服内白名单如下:\n");
-            List<List<String>> splitedNameList = SetController.chunkSet(whiteList, 10);
+            List<List<String>> splitedNameList = CollectionUtils.chunkSet(whiteList, 10);
             if (splitedNameList.isEmpty()) {
                 whitelistNameString.append("无结果\n");
             } else {

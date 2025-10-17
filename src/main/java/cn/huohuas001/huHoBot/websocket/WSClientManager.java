@@ -1,7 +1,9 @@
-package cn.huohuas001.huHoBot;
+package cn.huohuas001.huhobot.websocket;
 
 import cn.huohuas001.config.ServerConfig;
+import cn.huohuas001.huhobot.HuHoBot;
 import com.alibaba.fastjson2.JSONObject;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.allaymc.api.scheduler.Scheduler;
 import org.allaymc.api.server.Server;
@@ -11,33 +13,29 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 
 @Slf4j
-public class WebsocketClientManager {
-    private static final String websocketUrl = ServerConfig.WS_SERVER_URL; //Websocket地址
-    private static WsClient client; //Websocket客户端
-    private final int RECONNECT_DELAY = 5; // 重连延迟时间，单位为秒
-    private final int MAX_RECONNECT_ATTEMPTS = 5; // 最大重连尝试次数
-    private final HuHoBot plugin;
-    private final Scheduler scheduler = Server.getInstance().getScheduler();
-    private int ReconnectAttempts = 0;
-    private boolean shouldReconnect = true; // 控制是否重连的变量
-    private int currentTask = 0;
-    private int autoDisConnectTask = 0;
+public class WSClientManager {
+
+    private static final int RECONNECT_DELAY = 5; // 重连延迟时间，单位为秒
+    private static final int MAX_RECONNECT_ATTEMPTS = 5; // 最大重连尝试次数
+
+    private static WSClient client; //Websocket客户端
+
+    private final Scheduler scheduler;
+
+    private int reconnectAttempts;
+    @Setter
+    private boolean shouldReconnect; // 控制是否重连的变量
+
+    private int currentTask, autoDisConnectTask;
 
 
-    public WebsocketClientManager() {
-        plugin = HuHoBot.getPlugin();
-    }
-
-    /**
-     * 设置是否应该重连
-     *
-     * @param shouldReconnect 是否应该重连
-     */
-    public void setShouldReconnect(boolean shouldReconnect) {
-        this.shouldReconnect = shouldReconnect;
+    public WSClientManager() {
+        this.scheduler = Server.getInstance().getScheduler();
+        this.shouldReconnect = true;
     }
 
     /**
@@ -48,8 +46,8 @@ public class WebsocketClientManager {
             if (currentTask == 0) {
                 return false;
             }
-            ReconnectAttempts++;
-            if (ReconnectAttempts >= MAX_RECONNECT_ATTEMPTS) {
+            reconnectAttempts++;
+            if (reconnectAttempts >= MAX_RECONNECT_ATTEMPTS) {
                 log.warn(" 重连尝试已达到最大次数，将不再尝试重新连接。");
                 cancelCurrentTask();
                 return false;
@@ -58,7 +56,7 @@ public class WebsocketClientManager {
                 cancelCurrentTask();
                 return false;
             }
-            log.info(" 正在尝试重新连接,这是第({}/" + MAX_RECONNECT_ATTEMPTS + ")次连接", ReconnectAttempts);
+            log.info(" 正在尝试重新连接,这是第({}/" + MAX_RECONNECT_ATTEMPTS + ")次连接", reconnectAttempts);
             this.connectServer();
             return true;
         }
@@ -67,11 +65,11 @@ public class WebsocketClientManager {
     public void cancelCurrentTask() {
         if (currentTask != 0) {
             currentTask = 0;
-            ReconnectAttempts = 0;
+            reconnectAttempts = 0;
         }
     }
 
-    public WsClient getClient() {
+    public WSClient getClient() {
         return client;
     }
 
@@ -90,7 +88,7 @@ public class WebsocketClientManager {
 
     public void setAutoDisConnectTask() {
         if (autoDisConnectTask == 0) {
-            scheduler.scheduleDelayed(plugin, () -> {
+            scheduler.scheduleDelayed(HuHoBot.getInstance(), () -> {
                 autoDisConnectClient();
                 return true;
             }, 6 * 60 * 60 * 20);
@@ -104,18 +102,17 @@ public class WebsocketClientManager {
     public boolean connectServer() {
         log.info(" 正在连接服务端...");
         try {
-            URI uri = new URI(websocketUrl);
+            URI uri = new URI(ServerConfig.WS_SERVER_URL);
             if (client == null || !client.isOpen()) {
-                client = new WsClient(uri, this);
+                client = new WSClient(uri, this);
                 setShouldReconnect(true); // 设置是否重连
                 client.connect();
             }
             return true;
         } catch (URISyntaxException e) {
-            log.error(e.getStackTrace().toString());
+            log.error("连接URL格式错误", e);
         } catch (Exception e) {
-            log.error("连接HuHoBot失败: " + e.getMessage());
-            e.printStackTrace();
+            log.error("连接HuHoBot失败", e);
         }
         return false;
     }
@@ -128,16 +125,14 @@ public class WebsocketClientManager {
                     }
 
                     public void checkServerTrusted(X509Certificate[] chain, String authType) {
-                        // 添加调试信息
-                /*logger.info("接受服务器证书: " +
-                    (chain != null && chain.length > 0 ? chain[0].getSubjectDN() : "无证书"));*/
+                        log.debug("接受服务器证书: {}", chain != null && chain.length > 0 ? chain[0].getSubjectX500Principal() : "无证书");
                     }
 
                     public X509Certificate[] getAcceptedIssuers() {
                         return new X509Certificate[0];
                     }
                 }
-        }, new java.security.SecureRandom());
+        }, new SecureRandom());
 
         // 设置协议版本
         context.getDefaultSSLParameters().setProtocols(new String[]{"TLSv1.2", "TLSv1.3"});
@@ -154,7 +149,7 @@ public class WebsocketClientManager {
 
     public void clientReconnect() {
         if (shouldReconnect && currentTask == 0) {
-            scheduler.scheduleRepeating(plugin, this::autoReconnect, this.RECONNECT_DELAY * 20);
+            scheduler.scheduleRepeating(HuHoBot.getInstance(), this::autoReconnect, RECONNECT_DELAY * 20);
             currentTask = 1;
         }
     }
