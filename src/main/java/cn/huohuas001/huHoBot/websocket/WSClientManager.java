@@ -1,6 +1,5 @@
 package cn.huohuas001.huhobot.websocket;
 
-import cn.huohuas001.config.ServerConfig;
 import cn.huohuas001.huhobot.HuHoBot;
 import com.alibaba.fastjson2.JSONObject;
 import lombok.Setter;

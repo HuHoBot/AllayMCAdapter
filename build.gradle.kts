@@ -5,7 +5,7 @@ plugins {
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
-group = "cn.huohuas001.huHoBot"
+group = "cn.huohuas001.huhobot"
 description = "HuHoBot Allay Adapter"
 version = "0.1.0"
 
